@@ -48,6 +48,4 @@ public class Pedido {
     @OneToMany(mappedBy = "pedidos")
     private List<ItemPedido> itens = new ArrayList<>();
 
-
-
 }

@@ -9,5 +9,5 @@ import java.util.List;
 public interface ProdutoRepository extends JpaRepository<Produto, Long> {
     List<Produto> findByRestauranteId(Long restauranteId);
     List<Produto> findByCategoria(String categoria);
-    List<Produto> findByAvaliableTrue();
+    List<Produto> findByDisponivelTrue();
 }
