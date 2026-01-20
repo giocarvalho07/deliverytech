@@ -2,7 +2,7 @@
 
 Uma API REST completa para gerenciamento de ecossistemas de delivery, permitindo o controle de clientes, cardápios de restaurantes e o fluxo de processamento de pedidos em tempo real.
 
-## 🛠️ Tecnologias Utilizadas
+## Tecnologias Utilizadas
 
 * **Java 17/21**: Linguagem base do projeto.
 * **Spring Boot 3**: Framework para construção da aplicação e gestão de dependências.
@@ -13,7 +13,7 @@ Uma API REST completa para gerenciamento de ecossistemas de delivery, permitindo
 
 ---
 
-## 🏗️ Arquitetura e Modelo de Dados
+## Arquitetura e Modelo de Dados
 
 A API utiliza relacionamentos complexos para garantir a integridade do negócio:
 
@@ -26,7 +26,7 @@ A API utiliza relacionamentos complexos para garantir a integridade do negócio:
 
 ---
 
-## 🚀 Configuração e Execução
+## Configuração e Execução
 
 ### 1. Ajuste de Inicialização (Importante)
 Para que os dados iniciais do arquivo `data.sql` sejam carregados após a criação das tabelas pelo Hibernate, o arquivo `src/main/resources/application.properties` deve conter:
@@ -68,7 +68,7 @@ GET,/pedidos/cliente/{id},Consulta o histórico completo de pedidos de um client
 PATCH,/pedidos/{id}/status,"Atualiza o status do pedido (Ex: PENDENTE, CONFIRMADO, ENTREGUE)."
 
 
-📬 Postman Collection
+Postman Collection
 Para facilitar os testes de integração e validar os fluxos da API, disponibilizamos uma collection pronta:
 
 Localize o arquivo: O arquivo encontra-se na raiz do projeto com o nome delivery_api.postman_collection.json.
