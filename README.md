@@ -78,5 +78,14 @@ Postman Collection
 * Variáveis: A coleção já está configurada para usar a variável {{baseUrl}}. Certifique-se de que ela aponta para http://localhost:8080.
 
 
+Interface Visual (Swagger UI): http://localhost:8080/swagger-ui/index.html
+
+* (É aqui que você visualiza os botões, testa os endpoints e vê os modelos JSON).
+
+* Documentação Técnica (OpenAPI JSON): http://localhost:8080/v3/api-docs
+
+* (Este link retorna um JSON puro com toda a especificação da sua API, usado por ferramentas de automação).
+
+
 󰞵 Desenvolvedor
 [Giovanni de Carvalho] - [TURMA 2602] Desenvolvido com JDK 21 e Spring Boot 3.2.x
