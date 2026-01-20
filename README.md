@@ -47,20 +47,20 @@ A API estará disponível em: http://localhost:8080
 
 
 Método,Endpoint,Descrição
-* POST,/clientes,Cadastra um novo cliente no sistema.
-* GET,/clientes,Retorna a lista de todos os clientes com status ativo.
-* GET,/clientes/{id},Busca os detalhes de um cliente específico pelo seu ID.
-* PUT,/clientes/{id},"Atualiza as informações cadastrais (nome, endereço, etc)."
-* DELETE,/clientes/{id},Realiza a inativação (exclusão lógica) do cliente.
+* POST/clientes,Cadastra um novo cliente no sistema.
+* GET/clientes,Retorna a lista de todos os clientes com status ativo.
+* GET/clientes/{id},Busca os detalhes de um cliente específico pelo seu ID.
+* PUT/clientes/{id},"Atualiza as informações cadastrais (nome, endereço, etc)."
+* DELETE/clientes/{id},Realiza a inativação (exclusão lógica) do cliente.
 
 Método,Endpoint,Descrição
-* POST,/restaurantes,Cadastra um novo estabelecimento.
-* GET,/restaurantes,Lista todos os restaurantes cadastrados.
-* GET,/restaurantes/categoria/{cat},"Filtra estabelecimentos por categoria (ex: Pizza, Japonesa)."
+* POST/restaurantes,Cadastra um novo estabelecimento.
+* GET/restaurantes,Lista todos os restaurantes cadastrados.
+* GET/restaurantes/categoria/{cat},"Filtra estabelecimentos por categoria (ex: Pizza, Japonesa)."
 
 Método,Endpoint,Descrição
-* POST,/produtos,Adiciona um novo item ao cardápio de um restaurante.
-* GET,/produtos/restaurante/{id},Lista todos os produtos vinculados a um restaurante específico.
+* POST/produtos,Adiciona um novo item ao cardápio de um restaurante.
+* GET/produtos/restaurante/{id},Lista todos os produtos vinculados a um restaurante específico.
 
 Método,Endpoint,Descrição
 * POST/pedidos,Registra um novo pedido contendo múltiplos itens.
