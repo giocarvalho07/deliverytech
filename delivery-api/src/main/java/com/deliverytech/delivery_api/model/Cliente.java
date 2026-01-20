@@ -1,7 +1,9 @@
 package com.deliverytech.delivery_api.model;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -9,6 +11,8 @@ import java.util.List;
 
 @Getter
 @Setter
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity
 @Table(name = "clientes")
 public class Cliente {
@@ -31,7 +35,7 @@ public class Cliente {
 
     private boolean ativo;
 
-    @OneToMany(mappedBy="clientes", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy="cliente", fetch = FetchType.LAZY)
     private List<Pedido> pedidos = new ArrayList<>();
 
 }

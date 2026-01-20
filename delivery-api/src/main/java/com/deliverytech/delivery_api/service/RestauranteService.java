@@ -32,7 +32,7 @@ public class RestauranteService {
 
     // Buscar por Categoria
     public List<Restaurante> buscarPorCategoria(String categoria) {
-        return restauranteRepository.findByCategory(categoria);
+        return restauranteRepository.findByCategoria(categoria);
     }
 
     // Atualizar
@@ -46,7 +46,7 @@ public class RestauranteService {
         restauranteExistente.setTelefone(dadosAtualizados.getTelefone());
         restauranteExistente.setTaxaEntrega(dadosAtualizados.getTaxaEntrega());
         // A avaliação geralmente é atualizada por outro processo, mas incluímos se necessário
-        restauranteExistente.setAvaliação(dadosAtualizados.getAvaliação());
+        restauranteExistente.setAvaliacao(dadosAtualizados.getAvaliacao());
 
         return restauranteRepository.save(restauranteExistente);
     }

@@ -47,7 +47,7 @@ public class PedidoService {
     }
 
     public List<Pedido> consultarPorCliente(Long clienteId) {
-        return pedidoRepository.findByClientId(clienteId);
+        return pedidoRepository.findByClienteId(clienteId);
     }
 
     @Transactional

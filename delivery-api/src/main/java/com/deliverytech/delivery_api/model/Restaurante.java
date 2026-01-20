@@ -25,17 +25,17 @@ public class Restaurante {
 
     private String telefone;
 
-    private BigDecimal avaliação;
+    private BigDecimal avaliacao;
 
     @Column(name = "taxa_entrega")
     private BigDecimal taxaEntrega;
 
     private Boolean ativo;
 
-    @OneToMany(mappedBy="restaurantes", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "restaurante", fetch = FetchType.LAZY)
     private List<Produto> produtos = new ArrayList<>();
 
-    @OneToMany(mappedBy="restaurantes", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "restaurante", fetch = FetchType.LAZY)
     private List<Pedido> pedidos = new ArrayList<>();
 
 }

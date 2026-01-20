@@ -8,7 +8,7 @@ import java.util.List;
 @Repository
 public interface RestauranteRepository extends JpaRepository<Restaurante, Long> {
     List<Restaurante> findByAtivoTrue();
-    List<Restaurante> findByCategory(String categoria);
-    List<Restaurante> findByAtivoTrueOrderByRatingDesc();
+    List<Restaurante> findByCategoria(String categoria);
+    List<Restaurante> findByAtivoTrueOrderByAvaliacaoDesc();
 
 }
