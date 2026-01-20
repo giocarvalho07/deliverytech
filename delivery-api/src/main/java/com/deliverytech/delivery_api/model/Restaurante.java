@@ -1,5 +1,6 @@
 package com.deliverytech.delivery_api.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -32,9 +33,11 @@ public class Restaurante {
 
     private Boolean ativo;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "restaurante", fetch = FetchType.LAZY)
     private List<Produto> produtos = new ArrayList<>();
 
+    @JsonIgnore
     @OneToMany(mappedBy = "restaurante", fetch = FetchType.LAZY)
     private List<Pedido> pedidos = new ArrayList<>();
 

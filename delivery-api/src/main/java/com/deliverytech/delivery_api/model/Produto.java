@@ -1,5 +1,6 @@
 package com.deliverytech.delivery_api.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -25,6 +26,7 @@ public class Produto {
 
     private Boolean disponivel;
 
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "restaurante_id")
     private Restaurante restaurante;

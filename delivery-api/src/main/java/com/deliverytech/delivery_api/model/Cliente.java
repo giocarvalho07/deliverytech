@@ -1,5 +1,6 @@
 package com.deliverytech.delivery_api.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -35,6 +36,7 @@ public class Cliente {
 
     private boolean ativo;
 
+    @JsonIgnore
     @OneToMany(mappedBy="cliente", fetch = FetchType.LAZY)
     private List<Pedido> pedidos = new ArrayList<>();
 

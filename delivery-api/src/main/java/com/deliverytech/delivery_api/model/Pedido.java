@@ -1,6 +1,7 @@
 package com.deliverytech.delivery_api.model;
 
 import com.deliverytech.delivery_api.enums.StatusPedidos;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -37,14 +38,17 @@ public class Pedido {
     @Enumerated(EnumType.STRING)
     private StatusPedidos status;
 
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "cliente_id")
     private Cliente cliente;
 
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "restaurante_id")
     private Restaurante restaurante;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "pedido")
     private List<ItemPedido> itens = new ArrayList<>();
 
