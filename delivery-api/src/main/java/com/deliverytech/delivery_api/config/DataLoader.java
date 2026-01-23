@@ -17,6 +17,7 @@ import org.springframework.context.annotation.Configuration;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Arrays;
+import java.util.List;
 
 @Configuration
 public class DataLoader implements CommandLineRunner {
@@ -69,6 +70,29 @@ public class DataLoader implements CommandLineRunner {
         logger.info("Carga de dados finalizada com sucesso!");
         logger.info("Clientes cadastrados: {}", clienteRepository.count());
         logger.info("Restaurantes cadastrados: {}", restauranteRepository.count());
+
+
+
+        logger.info("---------- EXECUTANDO CENÁRIOS DE TESTE 2----------");
+
+        // 🔎 Cenário 1: Busca de Cliente por Email
+        clienteRepository.findByEmail("joao@email.com").ifPresent(c ->
+                logger.info("Cenário 1 (Email) - Sucesso: Cliente encontrado: {}", c.getNome())
+        );
+
+        // 🍔 Cenário 2: Produtos por Restaurante
+        List<Produto> produtos = produtoRepository.findByRestauranteId(1L);
+        logger.info("Cenário 2 (Produtos) - Sucesso: Itens encontrados: {}", produtos.size());
+
+        // 📅 Cenário 3: Pedidos Recentes
+        List<Pedido> pedidosRecentes = pedidoRepository.findTop10ByOrderByDataPedidoDesc();
+        logger.info("Cenário 3 (Pedidos) - Sucesso: Pedidos recuperados: {}", pedidosRecentes.size());
+
+        // 💰 Cenário 4: Restaurantes por Taxa
+        List<Restaurante> baratos = restauranteRepository.findByTaxaEntregaLessThanEqual(BigDecimal.valueOf(5.00));
+        logger.info("Cenário 4 (Taxa) - Sucesso: Restaurantes com taxa <= 5.00: {}", baratos.size());
+
+        logger.info("--------------------------------------------------");
     }
 
     // Métodos auxiliares para limpar o código (usando Setters para evitar erro de construtor)
