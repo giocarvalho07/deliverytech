@@ -46,6 +46,16 @@ Bash
 A API estará disponível em: http://localhost:8080
 
 
+Arquitetura do Projeto
+O projeto segue o padrão de camadas:
+
+Model (Entities): Representação do banco de dados.
+Repository: Camada de acesso aos dados com JPQL e SQL Nativo.
+Service: Regras de negócio e cálculos.
+Controller: Exposição dos Endpoints REST.
+DTO/Projection: Camada de transporte e otimização de dados.
+
+
 Método,Endpoint,Descrição
 * POST/clientes,Cadastra um novo cliente no sistema.
 * GET/clientes,Retorna a lista de todos os clientes com status ativo.
@@ -66,6 +76,13 @@ Método,Endpoint,Descrição
 * POST/pedidos,Registra um novo pedido contendo múltiplos itens.
 * GET/pedidos/cliente/{id},Consulta o histórico completo de pedidos de um cliente.
 * PATCH/pedidos/{id}/status,"Atualiza o status do pedido (Ex: PENDENTE, CONFIRMADO, ENTREGUE)."
+
+Método,Endpoint,Descrição
+* GET/item-pedidos,Consulta o histórico completo de itens de pedidos.
+* GET/item-pedidos/pedido{id},Busca os detalhes de um item pedido específico pelo seu ID.
+
+Método,Endpoint,Descrição
+* GET//relatorio/total-vendas-por-restaurante,Consulta o histórico total de vendas por restaurantes.
 
 
 Postman Collection
