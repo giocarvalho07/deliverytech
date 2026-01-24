@@ -1,14 +1,8 @@
 package com.deliverytech.delivery_api.config;
 
 import com.deliverytech.delivery_api.enums.StatusPedidos;
-import com.deliverytech.delivery_api.model.Cliente;
-import com.deliverytech.delivery_api.model.Pedido;
-import com.deliverytech.delivery_api.model.Produto;
-import com.deliverytech.delivery_api.model.Restaurante;
-import com.deliverytech.delivery_api.repository.ClienteRepository;
-import com.deliverytech.delivery_api.repository.PedidoRepository;
-import com.deliverytech.delivery_api.repository.ProdutoRepository;
-import com.deliverytech.delivery_api.repository.RestauranteRepository;
+import com.deliverytech.delivery_api.model.*;
+import com.deliverytech.delivery_api.repository.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;
@@ -28,15 +22,18 @@ public class DataLoader implements CommandLineRunner {
     private final RestauranteRepository restauranteRepository;
     private final ProdutoRepository produtoRepository;
     private final PedidoRepository pedidoRepository;
+    private final ItemPedidoRespository itemPedidoRespository;
 
     public DataLoader(ClienteRepository clienteRepository,
                       RestauranteRepository restauranteRepository,
                       ProdutoRepository produtoRepository,
-                      PedidoRepository pedidoRepository) {
+                      PedidoRepository pedidoRepository,
+                     ItemPedidoRespository itemPedidoRespository ) {
         this.clienteRepository = clienteRepository;
         this.restauranteRepository = restauranteRepository;
         this.produtoRepository = produtoRepository;
         this.pedidoRepository = pedidoRepository;
+        this.itemPedidoRespository = itemPedidoRespository;
     }
 
     @Override
@@ -67,9 +64,20 @@ public class DataLoader implements CommandLineRunner {
         Pedido ped3 = criarPedido("PED1234567892", StatusPedidos.ENTREGUE, 8.0, 53.90, c3, r3);
         pedidoRepository.saveAll(Arrays.asList(ped1, ped2, ped3));
 
+
+        // 5. Inserir Itens dos Pedidos
+        ItemPedido item1 = criarItemPedido(1, 35.90, ped1, p1); // Pizza no Pedido 1
+        ItemPedido item2 = criarItemPedido(1, 18.90, ped2, p4); // Burger no Pedido 2
+        ItemPedido item3 = criarItemPedido(1, 45.90, ped3, p7); // Sushi no Pedido 3
+
+        itemPedidoRespository.saveAll(Arrays.asList(item1, item2, item3));
+
         logger.info("Carga de dados finalizada com sucesso!");
         logger.info("Clientes cadastrados: {}", clienteRepository.count());
         logger.info("Restaurantes cadastrados: {}", restauranteRepository.count());
+        logger.info("Produtos cadastrados: {}", produtoRepository.count());
+        logger.info("Pedidos cadastrados: {}", pedidoRepository.count());
+        logger.info("Itens Pedidos cadastrados: {}", itemPedidoRespository.count());
 
 
 
@@ -148,5 +156,17 @@ public class DataLoader implements CommandLineRunner {
         p.setCliente(c);
         p.setRestaurante(r);
         return p;
+    }
+
+    private ItemPedido criarItemPedido(Integer qtd, Double precoUnit, Pedido ped, Produto prod) {
+        ItemPedido item = new ItemPedido();
+        item.setQuantidade(qtd);
+        item.setPrecoUnitario(BigDecimal.valueOf(precoUnit));
+        // Calcula o subtotal automaticamente: qtd * precoUnit
+        BigDecimal subtotal = BigDecimal.valueOf(precoUnit).multiply(BigDecimal.valueOf(qtd));
+        item.setSubtotal(subtotal);
+        item.setPedido(ped);
+        item.setProduto(prod);
+        return item;
     }
 }

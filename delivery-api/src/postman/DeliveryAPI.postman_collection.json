@@ -1,9 +1,11 @@
 {
   "info": {
-    "_postman_id": "a1b2c3d4-e5f6-4g7h-8i9j-k0l1m2n3o4p5",
+    "_postman_id": "33728e89-d49d-4c89-ab08-ab5a78277e28",
     "name": "Delivery Tech API",
     "description": "Collection para teste das funcionalidades da API de Delivery",
-    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "49545615",
+    "_collection_link": "https://go.postman.co/collection/49545615-33728e89-d49d-4c89-ab08-ab5a78277e28?source=collection_link"
   },
   "item": [
     {
@@ -32,7 +34,8 @@
                 "clientes"
               ]
             }
-          }
+          },
+          "response": []
         },
         {
           "name": "Listar Clientes Ativos",
@@ -48,7 +51,8 @@
                 "clientes"
               ]
             }
-          }
+          },
+          "response": []
         },
         {
           "name": "Buscar Cliente por ID",
@@ -65,7 +69,8 @@
                 "1"
               ]
             }
-          }
+          },
+          "response": []
         },
         {
           "name": "Atualizar Cliente",
@@ -91,7 +96,8 @@
                 "1"
               ]
             }
-          }
+          },
+          "response": []
         },
         {
           "name": "Inativar Cliente (Delete)",
@@ -108,7 +114,8 @@
                 "1"
               ]
             }
-          }
+          },
+          "response": []
         }
       ]
     },
@@ -138,7 +145,8 @@
                 "restaurantes"
               ]
             }
-          }
+          },
+          "response": []
         },
         {
           "name": "Listar Restaurantes",
@@ -154,7 +162,8 @@
                 "restaurantes"
               ]
             }
-          }
+          },
+          "response": []
         },
         {
           "name": "Buscar por Categoria",
@@ -172,7 +181,8 @@
                 "Italiana"
               ]
             }
-          }
+          },
+          "response": []
         }
       ]
     },
@@ -202,7 +212,8 @@
                 "produtos"
               ]
             }
-          }
+          },
+          "response": []
         },
         {
           "name": "Listar por Restaurante",
@@ -220,7 +231,8 @@
                 "1"
               ]
             }
-          }
+          },
+          "response": []
         }
       ]
     },
@@ -250,7 +262,8 @@
                 "pedidos"
               ]
             }
-          }
+          },
+          "response": []
         },
         {
           "name": "Atualizar Status do Pedido",
@@ -275,7 +288,8 @@
                 }
               ]
             }
-          }
+          },
+          "response": []
         },
         {
           "name": "Listar Pedidos por Cliente",
@@ -293,7 +307,168 @@
                 "1"
               ]
             }
-          }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "ItemPedidos",
+      "item": [
+        {
+          "name": "Listar Itens pedido",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/item-pedidos",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "item-pedidos"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Listar Itens pedidoID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/item-pedidos/pedido/1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "item-pedidos",
+                "pedido",
+                "1"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "database",
+      "item": [
+        {
+          "name": "Get H2",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"customer\": { \"id\": 1 },\n    \"restaurant\": { \"id\": 1 },\n    \"deliveryAdress\": \"Rua das Flores, 123\",\n    \"feeDelivery\": 7.50,\n    \"totalValue\": 99.30,\n    \"status\": \"PENDING\",\n    \"itens\": [\n        {\n            \"amount\": 2,\n            \"unitPrice\": 45.90,\n            \"subtotal\": 91.80,\n            \"product\": { \"id\": 1 }\n        }\n    ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/h2-console",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "h2-console"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "swagger",
+      "item": [
+        {
+          "name": "Get Swagger",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"customer\": { \"id\": 1 },\n    \"restaurant\": { \"id\": 1 },\n    \"deliveryAdress\": \"Rua das Flores, 123\",\n    \"feeDelivery\": 7.50,\n    \"totalValue\": 99.30,\n    \"status\": \"PENDING\",\n    \"itens\": [\n        {\n            \"amount\": 2,\n            \"unitPrice\": 45.90,\n            \"subtotal\": 91.80,\n            \"product\": { \"id\": 1 }\n        }\n    ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/swagger-ui.html",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "swagger-ui.html"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "infra",
+      "item": [
+        {
+          "name": "Get Health",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"customer\": { \"id\": 1 },\n    \"restaurant\": { \"id\": 1 },\n    \"deliveryAdress\": \"Rua das Flores, 123\",\n    \"feeDelivery\": 7.50,\n    \"totalValue\": 99.30,\n    \"status\": \"PENDING\",\n    \"itens\": [\n        {\n            \"amount\": 2,\n            \"unitPrice\": 45.90,\n            \"subtotal\": 91.80,\n            \"product\": { \"id\": 1 }\n        }\n    ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/health",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "health"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Info",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/info",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "info"
+              ]
+            }
+          },
+          "response": []
         }
       ]
     }
