@@ -354,6 +354,29 @@
       ]
     },
     {
+      "name": "Relatorio",
+      "item": [
+        {
+          "name": "Listar Relatorios",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/relatorio/total-vendas-por-restaurante",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "relatorio",
+                "total-vendas-por-restaurante"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
       "name": "database",
       "item": [
         {
