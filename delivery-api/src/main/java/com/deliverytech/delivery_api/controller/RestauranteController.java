@@ -1,55 +1,62 @@
 package com.deliverytech.delivery_api.controller;
 
-import com.deliverytech.delivery_api.model.Restaurante;
+import com.deliverytech.delivery_api.dto.request.RestauranteRequestDTO;
+import com.deliverytech.delivery_api.dto.response.RestauranteResponseDTO;
 import com.deliverytech.delivery_api.service.RestauranteService;
-import org.springframework.beans.factory.annotation.Autowired;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import java.math.BigDecimal;
 import java.util.List;
 
+
 @RestController
-@RequestMapping("/restaurantes")
+@RequestMapping("/api/restaurantes")
 public class RestauranteController {
 
-    @Autowired
-    private RestauranteService restauranteService;
+    private final RestauranteService restauranteService;
 
-    // POST /restaurantes
+    public RestauranteController(RestauranteService restauranteService) {
+        this.restauranteService = restauranteService;
+    }
+
+    // POST /api/restaurantes - Cadastrar restaurante
     @PostMapping
-    public ResponseEntity<Restaurante> cadastrar(@RequestBody Restaurante restaurante) {
-        Restaurante novoRestaurante = restauranteService.salvar(restaurante);
+    public ResponseEntity<RestauranteResponseDTO> cadastrar(@Valid @RequestBody RestauranteRequestDTO dto) {
+        RestauranteResponseDTO novoRestaurante = restauranteService.cadastrarRestaurante(dto);
         return new ResponseEntity<>(novoRestaurante, HttpStatus.CREATED);
     }
 
-    // GET /restaurantes
-    @GetMapping
-    public ResponseEntity<List<Restaurante>> listar() {
-        return ResponseEntity.ok(restauranteService.listarTodos());
-    }
-
-    // GET /restaurantes/{id}
+    // GET /api/restaurantes/{id} - Buscar por ID
     @GetMapping("/{id}")
-    public ResponseEntity<Restaurante> buscarPorId(@PathVariable Long id) {
-        return ResponseEntity.ok(restauranteService.buscarPorId(id));
+    public ResponseEntity<RestauranteResponseDTO> buscarPorId(@PathVariable Long id) {
+        return ResponseEntity.ok(restauranteService.buscarRestaurantePorId(id));
     }
 
-    // GET /restaurantes/categoria/{categoria}
+    // GET /api/restaurantes - Listar disponíveis (Ativos)
+    @GetMapping
+    public ResponseEntity<List<RestauranteResponseDTO>> listarDisponiveis() {
+        return ResponseEntity.ok(restauranteService.buscarRestaurantesDisponiveis());
+    }
+
+    // GET /api/restaurantes/categoria/{categoria} - Por categoria
     @GetMapping("/categoria/{categoria}")
-    public ResponseEntity<List<Restaurante>> buscarPorCategoria(@PathVariable String categoria) {
-        return ResponseEntity.ok(restauranteService.buscarPorCategoria(categoria));
+    public ResponseEntity<List<RestauranteResponseDTO>> buscarPorCategoria(@PathVariable String categoria) {
+        return ResponseEntity.ok(restauranteService.buscarRestaurantesPorCategoria(categoria));
     }
 
-    // PUT /restaurantes/{id}
+    // PUT /api/restaurantes/{id} - Atualizar restaurante
     @PutMapping("/{id}")
-    public ResponseEntity<Restaurante> atualizar(@PathVariable Long id, @RequestBody Restaurante restaurante) {
-        return ResponseEntity.ok(restauranteService.atualizar(id, restaurante));
+    public ResponseEntity<RestauranteResponseDTO> atualizar(@PathVariable Long id,
+                                                            @Valid @RequestBody RestauranteRequestDTO dto) {
+        return ResponseEntity.ok(restauranteService.atualizarRestaurante(id, dto));
     }
 
-    // DELETE /restaurantes/{id}
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> excluir(@PathVariable Long id) {
-        restauranteService.inativar(id);
-        return ResponseEntity.noContent().build();
+    // GET /api/restaurantes/{id}/taxa-entrega/{cep} - Calcular taxa
+    @GetMapping("/{id}/taxa-entrega/{cep}")
+    public ResponseEntity<BigDecimal> calcularTaxa(@PathVariable Long id, @PathVariable String cep) {
+        BigDecimal taxa = restauranteService.calcularTaxaEntrega(id, cep);
+        return ResponseEntity.ok(taxa);
     }
 }

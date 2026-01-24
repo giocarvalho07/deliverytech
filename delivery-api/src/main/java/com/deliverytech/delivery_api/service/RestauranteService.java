@@ -1,61 +1,78 @@
 package com.deliverytech.delivery_api.service;
 
+import com.deliverytech.delivery_api.dto.request.RestauranteRequestDTO;
+import com.deliverytech.delivery_api.dto.response.RestauranteResponseDTO;
 import com.deliverytech.delivery_api.model.Restaurante;
 import com.deliverytech.delivery_api.repository.RestauranteRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import java.math.BigDecimal;
 import java.util.List;
+import java.util.stream.Collectors;
+
 
 @Service
 public class RestauranteService {
-    @Autowired
-    private RestauranteRepository restauranteRepository;
 
-    // Criar
+    private final RestauranteRepository restauranteRepository;
+    private final ModelMapper modelMapper;
+
+    public RestauranteService(RestauranteRepository restauranteRepository, ModelMapper modelMapper) {
+        this.restauranteRepository = restauranteRepository;
+        this.modelMapper = modelMapper;
+    }
+
+    // cadastrarRestaurante(RestauranteDTO dto)
     @Transactional
-    public Restaurante salvar(Restaurante restaurante) {
-        restaurante.setAtivo(true);
-        return restauranteRepository.save(restaurante);
+    public RestauranteResponseDTO cadastrarRestaurante(RestauranteRequestDTO dto) {
+        Restaurante restaurante = modelMapper.map(dto, Restaurante.class);
+        return modelMapper.map(restauranteRepository.save(restaurante), RestauranteResponseDTO.class);
     }
 
-    // Listar Todos Ativos
-    public List<Restaurante> listarTodos() {
-        return restauranteRepository.findByAtivoTrue();
-    }
-
-    // Buscar por ID
-    public Restaurante buscarPorId(Long id) {
-        return restauranteRepository.findById(id)
+    // buscarRestaurantePorId(Long id) - Com tratamento de erro
+    public RestauranteResponseDTO buscarRestaurantePorId(Long id) {
+        Restaurante restaurante = restauranteRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Restaurante não encontrado com o ID: " + id));
+        return modelMapper.map(restaurante, RestauranteResponseDTO.class);
     }
 
-    // Buscar por Categoria
-    public List<Restaurante> buscarPorCategoria(String categoria) {
-        return restauranteRepository.findByCategoria(categoria);
+    // buscarRestaurantesPorCategoria(String categoria) - Filtro por categoria
+    public List<RestauranteResponseDTO> buscarRestaurantesPorCategoria(String categoria) {
+        return restauranteRepository.findByCategoria(categoria).stream()
+                .map(r -> modelMapper.map(r, RestauranteResponseDTO.class))
+                .collect(Collectors.toList());
     }
 
-    // Atualizar
+    // buscarRestaurantesDisponiveis() - Apenas ativos
+    public List<RestauranteResponseDTO> buscarRestaurantesDisponiveis() {
+        return restauranteRepository.findByAtivoTrue().stream()
+                .map(r -> modelMapper.map(r, RestauranteResponseDTO.class))
+                .collect(Collectors.toList());
+    }
+
+    // atualizarRestaurante(Long id, RestauranteDTO dto)
     @Transactional
-    public Restaurante atualizar(Long id, Restaurante dadosAtualizados) {
-        Restaurante restauranteExistente = buscarPorId(id);
+    public RestauranteResponseDTO atualizarRestaurante(Long id, RestauranteRequestDTO dto) {
+        Restaurante restauranteExistente = restauranteRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Restaurante não encontrado para atualização."));
 
-        restauranteExistente.setNome(dadosAtualizados.getNome());
-        restauranteExistente.setCategoria(dadosAtualizados.getCategoria());
-        restauranteExistente.setEndereco(dadosAtualizados.getEndereco());
-        restauranteExistente.setTelefone(dadosAtualizados.getTelefone());
-        restauranteExistente.setTaxaEntrega(dadosAtualizados.getTaxaEntrega());
-        // A avaliação geralmente é atualizada por outro processo, mas incluímos se necessário
-        restauranteExistente.setAvaliacao(dadosAtualizados.getAvaliacao());
-
-        return restauranteRepository.save(restauranteExistente);
+        modelMapper.map(dto, restauranteExistente);
+        return modelMapper.map(restauranteRepository.save(restauranteExistente), RestauranteResponseDTO.class);
     }
 
-    // Inativar (Delete Lógico)
-    @Transactional
-    public void inativar(Long id) {
-        Restaurante restaurante = buscarPorId(id);
-        restaurante.setAtivo(false);
-        restauranteRepository.save(restaurante);
+    // calcularTaxaEntrega(Long restauranteId, String cep)
+    // Exemplo de lógica: Se o CEP for da mesma região, taxa base, senão taxa + adicional
+    public BigDecimal calcularTaxaEntrega(Long restauranteId, String cep) {
+        Restaurante restaurante = restauranteRepository.findById(restauranteId)
+                .orElseThrow(() -> new RuntimeException("Restaurante inexistente."));
+
+        BigDecimal taxaBase = restaurante.getTaxaEntrega();
+
+        // Simulação de lógica por CEP: Se começar com "0", é entrega local
+        if (cep.startsWith("0")) {
+            return taxaBase;
+        }
+        return taxaBase.add(new BigDecimal("5.00")); // Adicional de distância
     }
 }
