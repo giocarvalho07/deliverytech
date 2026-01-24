@@ -13,10 +13,9 @@ Uma API REST completa para gerenciamento de ecossistemas de delivery, permitindo
 
 ---
 
-## Arquitetura e Modelo de Dados
+## Modelo de Dados
 
 A API utiliza relacionamentos complexos para garantir a integridade do negócio:
-
 
 
 * **Cliente ↔ Pedido**: Um cliente pode ter vários pedidos (1:N).
@@ -24,37 +23,39 @@ A API utiliza relacionamentos complexos para garantir a integridade do negócio:
 * **Pedido ↔ ItemPedido**: Um pedido é composto por vários itens (1:N).
 * **Produto ↔ ItemPedido**: Um produto pode estar presente em vários itens de pedidos diferentes.
 
+## Arquitetura do Projeto
+
+O projeto segue o padrão de camadas:
+
+* Model (Entities): Representação do banco de dados.
+* Repository: Camada de acesso aos dados com JPQL e SQL Nativo.
+* Service: Regras de negócio e cálculos.
+* Controller: Exposição dos Endpoints REST.
+* DTO/Projection: Camada de transporte e otimização de dados.
+
+
 ---
 
 ## Configuração e Execução
 
-### 1. Ajuste de Inicialização (Importante)
-Para que os dados iniciais do arquivo `data.sql` sejam carregados após a criação das tabelas pelo Hibernate, o arquivo `src/main/resources/application.properties` deve conter:
+### Como Rodar o Projeto
+Clone o repositório.
 
-properties
-# Adia a execução do data.sql até que o Hibernate crie as tabelas
-spring.jpa.defer-datasource-initialization=true
-spring.jpa.hibernate.ddl-auto=update```
+Certifique-se de que o Lombok está instalado na sua IDE.
+
+Execute a aplicação através da classe DeliveryApiApplication.
+
+O sistema utiliza um DataLoader automático que popula o banco de dados H2 ao iniciar.
 
 
-2. Rodar o Projeto
-Certifique-se de ter o Maven instalado e execute:
+### Certifique-se de ter o Maven instalado e execute:
 
 Bash
 
 ./mvnw spring-boot:run
 A API estará disponível em: http://localhost:8080
 
-
-Arquitetura do Projeto
-O projeto segue o padrão de camadas:
-
-Model (Entities): Representação do banco de dados.
-Repository: Camada de acesso aos dados com JPQL e SQL Nativo.
-Service: Regras de negócio e cálculos.
-Controller: Exposição dos Endpoints REST.
-DTO/Projection: Camada de transporte e otimização de dados.
-
+---
 
 Método,Endpoint,Descrição
 * POST/clientes,Cadastra um novo cliente no sistema.
