@@ -1,5 +1,6 @@
 package com.deliverytech.delivery_api.repository;
 
+import com.deliverytech.delivery_api.dto.TotalVendasPorRestauranteDTO;
 import com.deliverytech.delivery_api.enums.StatusPedidos;
 import com.deliverytech.delivery_api.model.Pedido;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -42,5 +43,9 @@ public interface PedidoRepository extends JpaRepository<Pedido, Long> {
             @Param("inicio") LocalDateTime inicio,
             @Param("fim") LocalDateTime fim
     );
+
+    @Query("SELECT new com.deliverytech.delivery_api.dto.TotalVendasPorRestauranteDTO(p.restaurante.nome, SUM(p.valorTotal)) " +
+            "FROM Pedido p GROUP BY p.restaurante.nome")
+    List<TotalVendasPorRestauranteDTO> obterTotalVendasPorRestaurante();
 
 }
