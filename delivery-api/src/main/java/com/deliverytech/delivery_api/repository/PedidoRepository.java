@@ -7,16 +7,17 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
-
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
+
 
 @Repository
 public interface PedidoRepository extends JpaRepository<Pedido, Long> {
     List<Pedido> findByClienteId(Long clienteId);
     List<Pedido> findByStatus(StatusPedidos status);
     List<Pedido> findTop10ByOrderByDataPedidoDesc();
+    List<Pedido> findByRestauranteId(Long restauranteId);
 
 
     @Query("""
@@ -44,8 +45,17 @@ public interface PedidoRepository extends JpaRepository<Pedido, Long> {
             @Param("fim") LocalDateTime fim
     );
 
+    // Exemplo de como devem ser as assinaturas no PedidoRepository
     @Query("SELECT new com.deliverytech.delivery_api.dto.TotalVendasPorRestauranteDTO(p.restaurante.nome, SUM(p.valorTotal)) " +
             "FROM Pedido p GROUP BY p.restaurante.nome")
     List<TotalVendasPorRestauranteDTO> obterTotalVendasPorRestaurante();
+
+    @Query("SELECT i.produto.nome, SUM(i.quantidade) as total FROM ItemPedido i GROUP BY i.produto.nome ORDER BY total DESC")
+    List<Object[]> obterProdutosMaisVendidos();
+
+    @Query("SELECT p.cliente.nome, COUNT(p) as total FROM Pedido p GROUP BY p.cliente.nome ORDER BY total DESC")
+    List<Object[]> obterClientesMaisAtivos();
+
+    List<Pedido> findByDataPedidoBetween(LocalDateTime inicio, LocalDateTime fim);
 
 }

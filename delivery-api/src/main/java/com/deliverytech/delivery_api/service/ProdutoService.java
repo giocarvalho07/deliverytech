@@ -101,4 +101,21 @@ public class ProdutoService {
                 .map(p -> modelMapper.map(p, ProdutoResponseDTO.class))
                 .collect(Collectors.toList());
     }
+
+    // DELETE /api/produtos/{id} - NOVO
+    @Transactional
+    public void removerProduto(Long id) {
+        if (!produtoRepository.existsById(id)) {
+            throw new EntityNotFoundException("Não é possível remover: Produto ID " + id + " não encontrado.");
+        }
+        produtoRepository.deleteById(id);
+    }
+
+    // GET /api/produtos/buscar?nome={nome} - NOVO
+    public List<ProdutoResponseDTO> buscarProdutosPorNome(String nome) {
+        // Assume-se que o repository tem o método findByNomeContainingIgnoreCase
+        return produtoRepository.findByNomeContainingIgnoreCase(nome).stream()
+                .map(p -> modelMapper.map(p, ProdutoResponseDTO.class))
+                .collect(Collectors.toList());
+    }
 }

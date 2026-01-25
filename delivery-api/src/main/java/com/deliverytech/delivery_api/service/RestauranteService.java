@@ -93,4 +93,38 @@ public class RestauranteService {
 
         return taxaBase.add(new BigDecimal("5.00"));
     }
+
+    // Método para buscar por proximidade (Filtra se o CEP/prefixo está contido na String endereco)
+    public List<RestauranteResponseDTO> buscarRestaurantesProximos(String cep) {
+        if (cep == null || cep.isBlank()) {
+            throw new BusinessException("O CEP deve ser informado para a busca de proximidade.");
+        }
+
+        // Pegamos os 5 primeiros dígitos ou o que for enviado para filtrar no texto do endereço
+        String termoBusca = cep.length() > 5 ? cep.substring(0, 5) : cep;
+
+        return restauranteRepository.findAll().stream()
+                .filter(r -> r.getAtivo() != null && r.getAtivo()) // Garante que apenas ativos apareçam
+                .filter(r -> r.getEndereco() != null && r.getEndereco().contains(termoBusca))
+                .map(r -> modelMapper.map(r, RestauranteResponseDTO.class))
+                .collect(Collectors.toList());
+    }
+
+    // Método para atualização parcial de status (PATCH)
+    @Transactional
+    public void atualizarStatus(Long id, boolean ativo) {
+        Restaurante restaurante = restauranteRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Restaurante não encontrado com o ID: " + id));
+        restaurante.setAtivo(ativo);
+        restauranteRepository.save(restaurante);
+    }
+
+    // Método de listagem com filtros individuais
+    public List<RestauranteResponseDTO> listarComFiltros(String categoria, Boolean ativo) {
+        return restauranteRepository.findAll().stream()
+                .filter(r -> (categoria == null || r.getCategoria().equalsIgnoreCase(categoria)))
+                .filter(r -> (ativo == null || r.getAtivo().equals(ativo)))
+                .map(r -> modelMapper.map(r, RestauranteResponseDTO.class))
+                .collect(Collectors.toList());
+    }
 }

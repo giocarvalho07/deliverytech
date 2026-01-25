@@ -149,38 +149,76 @@
             "header": [],
             "body": {
               "mode": "raw",
-              "raw": "{\n    \"nome\": \"Pizzaria Bella Napoli\",\n    \"endereco\": \"Rua Roma, 50\",\n    \"taxaEntrega\": 7.50,\n    \"ativo\": true\n}",
+              "raw": "{\n    \"nome\": \"Pizzaria Bella Napoli\",\n    \"endereco\": \"Rua Roma, 50, CEP 05001-000\",\n    \"taxaEntrega\": 7.50,\n    \"ativo\": true\n}",
               "options": {
-                "raw": {
-                  "language": "json"
-                }
+                "raw": { "language": "json" }
               }
             },
             "url": {
               "raw": "{{baseUrl}}/api/restaurantes",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "restaurantes"
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "restaurantes"]
+            }
+          }
+        },
+        {
+          "name": "Listar com Filtros",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/restaurantes?categoria=Pizza&ativo=true",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "restaurantes"],
+              "query": [
+                { "key": "categoria", "value": "Pizza" },
+                { "key": "ativo", "value": "true" }
               ]
             }
           }
         },
         {
-          "name": "Listar Restaurantes",
+          "name": "Buscar por ID",
           "request": {
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/api/restaurantes",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "restaurantes"
+              "raw": "{{baseUrl}}/api/restaurantes/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "restaurantes", "1"]
+            }
+          }
+        },
+        {
+          "name": "Atualizar Restaurante (PUT)",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"nome\": \"Bella Napoli Alterada\",\n    \"endereco\": \"Rua Nova, 100\",\n    \"taxaEntrega\": 8.00,\n    \"ativo\": true\n}",
+              "options": {
+                "raw": { "language": "json" }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/restaurantes/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "restaurantes", "1"]
+            }
+          }
+        },
+        {
+          "name": "Ativar/Desativar (PATCH)",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/restaurantes/1/status?ativo=false",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "restaurantes", "1", "status"],
+              "query": [
+                { "key": "ativo", "value": "false" }
               ]
             }
           }
@@ -192,15 +230,8 @@
             "header": [],
             "url": {
               "raw": "{{baseUrl}}/api/restaurantes/categoria/Italiana",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "restaurantes",
-                "categoria",
-                "Italiana"
-              ]
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "restaurantes", "categoria", "Italiana"]
             }
           }
         },
@@ -211,16 +242,20 @@
             "header": [],
             "url": {
               "raw": "{{baseUrl}}/api/restaurantes/1/taxa-entrega/01310100",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "restaurantes",
-                "1",
-                "taxa-entrega",
-                "01310100"
-              ]
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "restaurantes", "1", "taxa-entrega", "01310100"]
+            }
+          }
+        },
+        {
+          "name": "Restaurantes Próximos",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/restaurantes/proximos/05001000",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "restaurantes", "proximos", "05001000"]
             }
           }
         }
@@ -236,132 +271,36 @@
             "header": [],
             "body": {
               "mode": "raw",
-              "raw": "{\n    \"nome\": \"Pizza Margherita\",\n    \"descricao\": \"Molho de tomate, muçarela e manjericão\",\n    \"categoria\": \"Pizza\",\n    \"preco\": 45.90,\n    \"disponivel\": true,\n    \"restauranteId\": 1\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
+              "raw": "{\n    \"nome\": \"Pizza Margherita\",\n    \"descricao\": \"Molho, mussarela e manjericão\",\n    \"preco\": 45.90,\n    \"categoria\": \"Pizzas\",\n    \"disponivel\": true,\n    \"restauranteId\": 1\n}",
+              "options": { "raw": { "language": "json" } }
             },
-            "url": {
-              "raw": "{{baseUrl}}/api/produtos",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "produtos"
-              ]
-            }
+            "url": { "raw": "{{baseUrl}}/api/produtos", "host": ["{{baseUrl}}"], "path": ["api", "produtos"] }
           }
         },
         {
-          "name": "Listar por Restaurante",
+          "name": "Produtos do Restaurante",
           "request": {
             "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{baseUrl}}/api/produtos/restaurantes/1/produtos",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "produtos",
-                "restaurantes",
-                "1",
-                "produtos"
-              ]
-            }
+            "url": { "raw": "{{baseUrl}}/api/restaurantes/1/produtos", "host": ["{{baseUrl}}"], "path": ["api", "restaurantes", "1", "produtos"] }
           }
         },
         {
-          "name": "Buscar por ID",
+          "name": "Busca por Nome",
           "request": {
             "method": "GET",
-            "header": [],
             "url": {
-              "raw": "{{baseUrl}}/api/produtos/1",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "produtos",
-                "1"
-              ]
+              "raw": "{{baseUrl}}/api/produtos/buscar?nome=Pizza",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "produtos", "buscar"],
+              "query": [{ "key": "nome", "value": "Pizza" }]
             }
           }
         },
         {
-          "name": "Buscar por Categoria",
+          "name": "Remover Produto",
           "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{baseUrl}}/api/produtos/categoria/Pizza",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "produtos",
-                "categoria",
-                "Pizza"
-              ]
-            }
-          }
-        },
-        {
-          "name": "Atualizar Produto",
-          "request": {
-            "method": "PUT",
-            "header": [],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n    \"nome\": \"Pizza Margherita Especial\",\n    \"descricao\": \"Molho, muçarela, manjericão e borda recheada\",\n    \"categoria\": \"Pizza\",\n    \"preco\": 55.00,\n    \"disponivel\": true,\n    \"restauranteId\": 1\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            },
-            "url": {
-              "raw": "{{baseUrl}}/api/produtos/1",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "produtos",
-                "1"
-              ]
-            }
-          }
-        },
-        {
-          "name": "Alterar Disponibilidade",
-          "request": {
-            "method": "PATCH",
-            "header": [],
-            "url": {
-              "raw": "{{baseUrl}}/api/produtos/1/disponibilidade?disponivel=false",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "produtos",
-                "1",
-                "disponibilidade"
-              ],
-              "query": [
-                {
-                  "key": "disponivel",
-                  "value": "false"
-                }
-              ]
-            }
+            "method": "DELETE",
+            "url": { "raw": "{{baseUrl}}/api/produtos/1", "host": ["{{baseUrl}}"], "path": ["api", "produtos", "1"] }
           }
         }
       ]
@@ -376,40 +315,43 @@
             "header": [],
             "body": {
               "mode": "raw",
-              "raw": "{\n    \"clienteId\": 1,\n    \"restauranteId\": 1,\n    \"enderecoEntrega\": \"Rua das Flores, 123\",\n    \"itens\": [\n        {\n            \"produtoId\": 1,\n            \"quantidade\": 2\n        }\n    ]\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
+              "raw": "{\n    \"clienteId\": 1,\n    \"restauranteId\": 1,\n    \"itens\": [\n        {\n            \"produtoId\": 1,\n            \"quantidade\": 2\n        },\n        {\n            \"produtoId\": 2,\n            \"quantidade\": 1\n        }\n    ]\n}",
+              "options": { "raw": { "language": "json" } }
             },
-            "url": {
-              "raw": "{{baseUrl}}/api/pedidos",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "pedidos"
-              ]
-            }
+            "url": { "raw": "{{baseUrl}}/api/pedidos", "host": ["{{baseUrl}}"], "path": ["api", "pedidos"] }
           }
         },
         {
-          "name": "Listar Pedidos por Cliente",
+          "name": "Calcular Simulação (Sem Salvar)",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"clienteId\": 1,\n    \"restauranteId\": 1,\n    \"itens\": [\n        {\n            \"produtoId\": 1,\n            \"quantidade\": 2\n        }\n    ]\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": { "raw": "{{baseUrl}}/api/pedidos/calcular", "host": ["{{baseUrl}}"], "path": ["api", "pedidos", "calcular"] }
+          }
+        },
+        {
+          "name": "Buscar Pedido por ID",
           "request": {
             "method": "GET",
-            "header": [],
+            "url": { "raw": "{{baseUrl}}/api/pedidos/1", "host": ["{{baseUrl}}"], "path": ["api", "pedidos", "1"] }
+          }
+        },
+        {
+          "name": "Listar com Filtros (Status e Data)",
+          "request": {
+            "method": "GET",
             "url": {
-              "raw": "{{baseUrl}}/api/clientes/1/pedidos",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "clientes",
-                "1",
-                "pedidos"
+              "raw": "{{baseUrl}}/api/pedidos?status=PENDENTE&data=2026-01-25T10:00:00",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "pedidos"],
+              "query": [
+                { "key": "status", "value": "PENDENTE" },
+                { "key": "data", "value": "2026-01-25T10:00:00" }
               ]
             }
           }
@@ -421,21 +363,9 @@
             "header": [],
             "url": {
               "raw": "{{baseUrl}}/api/pedidos/1/status?status=CONFIRMADO",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "pedidos",
-                "1",
-                "status"
-              ],
-              "query": [
-                {
-                  "key": "status",
-                  "value": "CONFIRMADO"
-                }
-              ]
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "pedidos", "1", "status"],
+              "query": [{ "key": "status", "value": "CONFIRMADO" }]
             }
           }
         },
@@ -443,81 +373,87 @@
           "name": "Cancelar Pedido",
           "request": {
             "method": "DELETE",
-            "header": [],
-            "url": {
-              "raw": "{{baseUrl}}/api/pedidos/1",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "pedidos",
-                "1"
-              ]
-            }
+            "url": { "raw": "{{baseUrl}}/api/pedidos/1", "host": ["{{baseUrl}}"], "path": ["api", "pedidos", "1"] }
+          }
+        },
+        {
+          "name": "Histórico do Cliente",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/api/clientes/1/pedidos", "host": ["{{baseUrl}}"], "path": ["api", "clientes", "1", "pedidos"] }
+          }
+        },
+        {
+          "name": "Pedidos do Restaurante",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/api/restaurantes/1/pedidos", "host": ["{{baseUrl}}"], "path": ["api", "restaurantes", "1", "pedidos"] }
           }
         }
       ]
     },
     {
-      "name": "ItemPedidos",
+      "name": "Relatórios",
       "item": [
         {
-          "name": "Listar Todos os Itens",
+          "name": "Vendas por Restaurante",
           "request": {
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/api/item-pedidos",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "item-pedidos"
-              ]
+              "raw": "{{baseUrl}}/api/relatorios/vendas-por-restaurante",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "relatorios", "vendas-por-restaurante"]
             }
           }
         },
         {
-          "name": "Listar Itens por Pedido ID",
+          "name": "Produtos Mais Vendidos",
           "request": {
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/api/item-pedidos/pedido/1",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "item-pedidos",
-                "pedido",
-                "1"
+              "raw": "{{baseUrl}}/api/relatorios/produtos-mais-vendidos",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "relatorios", "produtos-mais-vendidos"]
+            }
+          }
+        },
+        {
+          "name": "Clientes Mais Ativos",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/relatorios/clientes-ativos",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "relatorios", "clientes-ativos"]
+            }
+          }
+        },
+        {
+          "name": "Pedidos por Período",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/relatorios/pedidos-por-periodo?inicio=2026-01-01T00:00:00&fim=2026-01-31T23:59:59",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "relatorios", "pedidos-por-periodo"],
+              "query": [
+                {
+                  "key": "inicio",
+                  "value": "2026-01-01T00:00:00",
+                  "description": "Data inicial no formato YYYY-MM-DDTHH:mm:ss"
+                },
+                {
+                  "key": "fim",
+                  "value": "2026-01-31T23:59:59",
+                  "description": "Data final no formato YYYY-MM-DDTHH:mm:ss"
+                }
               ]
             }
           }
-        }
-      ]
-    },
-    {
-      "name": "Relatorio",
-      "item": [
-        {
-          "name": "Listar Relatorios",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{baseUrl}}/api/relatorio/total-vendas-por-restaurante",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "relatorio",
-                "total-vendas-por-restaurante"
-              ]
-            }
-          },
-          "response": []
         }
       ]
     },

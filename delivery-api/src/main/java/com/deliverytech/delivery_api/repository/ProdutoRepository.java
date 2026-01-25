@@ -11,6 +11,7 @@ public interface ProdutoRepository extends JpaRepository<Produto, Long> {
     List<Produto> findByRestauranteId(Long restauranteId);
     List<Produto> findByCategoria(String categoria);
     List<Produto> findByDisponivelTrue();
+    List<Produto> findByNomeContainingIgnoreCase(String nome);
 
     // Produtos mais vendidos (Baseado na tabela de itens_pedido)
     @Query(value = "SELECT p.*, COUNT(ip.id) as total_vendas " +
