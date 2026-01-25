@@ -18,7 +18,7 @@
             "header": [],
             "body": {
               "mode": "raw",
-              "raw": "{\n    \"nome\": \"João Silva\",\n    \"email\": \"joao@email.com\",\n    \"telefone\": \"11999999999\",\n    \"endereco\": \"Rua das Flores, 123\",\n    \"ativo\": true\n}",
+              "raw": "{\n    \"nome\": \"João Silva\",\n    \"email\": \"joao@email.com\",\n    \"telefone\": \"11999999999\",\n    \"endereco\": \"Rua das Flores, 123\"\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -26,16 +26,16 @@
               }
             },
             "url": {
-              "raw": "{{baseUrl}}/clientes",
+              "raw": "{{baseUrl}}/api/clientes",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
+                "api",
                 "clientes"
               ]
             }
-          },
-          "response": []
+          }
         },
         {
           "name": "Listar Clientes Ativos",
@@ -43,34 +43,53 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/clientes",
+              "raw": "{{baseUrl}}/api/clientes",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
+                "api",
                 "clientes"
               ]
             }
-          },
-          "response": []
+          }
         },
         {
-          "name": "Buscar Cliente por ID",
+          "name": "Buscar por ID",
           "request": {
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/clientes/1",
+              "raw": "{{baseUrl}}/api/clientes/1",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
+                "api",
                 "clientes",
                 "1"
               ]
             }
-          },
-          "response": []
+          }
+        },
+        {
+          "name": "Buscar por Email",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/clientes/email/joao@email.com",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "clientes",
+                "email",
+                "joao@email.com"
+              ]
+            }
+          }
         },
         {
           "name": "Atualizar Cliente",
@@ -87,35 +106,36 @@
               }
             },
             "url": {
-              "raw": "{{baseUrl}}/clientes/1",
+              "raw": "{{baseUrl}}/api/clientes/1",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
+                "api",
                 "clientes",
                 "1"
               ]
             }
-          },
-          "response": []
+          }
         },
         {
-          "name": "Inativar Cliente (Delete)",
+          "name": "Alternar Status (Ativar/Inativar)",
           "request": {
-            "method": "DELETE",
+            "method": "PATCH",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/clientes/1",
+              "raw": "{{baseUrl}}/api/clientes/1/status",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
+                "api",
                 "clientes",
-                "1"
+                "1",
+                "status"
               ]
             }
-          },
-          "response": []
+          }
         }
       ]
     },
@@ -129,7 +149,7 @@
             "header": [],
             "body": {
               "mode": "raw",
-              "raw": "{\n    \"nome\": \"Pizzaria Bella Napoli\",\n    \"categoria\": \"Italiana\",\n    \"endereco\": \"Rua Roma, 50\",\n    \"telefone\": \"1144445555\",\n    \"taxaEntrega\": 7.50,\n    \"ativo\": true\n}",
+              "raw": "{\n    \"nome\": \"Pizzaria Bella Napoli\",\n    \"endereco\": \"Rua Roma, 50\",\n    \"taxaEntrega\": 7.50,\n    \"ativo\": true\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -137,16 +157,16 @@
               }
             },
             "url": {
-              "raw": "{{baseUrl}}/restaurantes",
+              "raw": "{{baseUrl}}/api/restaurantes",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
+                "api",
                 "restaurantes"
               ]
             }
-          },
-          "response": []
+          }
         },
         {
           "name": "Listar Restaurantes",
@@ -154,16 +174,16 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/restaurantes",
+              "raw": "{{baseUrl}}/api/restaurantes",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
+                "api",
                 "restaurantes"
               ]
             }
-          },
-          "response": []
+          }
         },
         {
           "name": "Buscar por Categoria",
@@ -171,18 +191,38 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/restaurantes/categoria/Italiana",
+              "raw": "{{baseUrl}}/api/restaurantes/categoria/Italiana",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
+                "api",
                 "restaurantes",
                 "categoria",
                 "Italiana"
               ]
             }
-          },
-          "response": []
+          }
+        },
+        {
+          "name": "Calcular Taxa Entrega",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/restaurantes/1/taxa-entrega/01310100",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "restaurantes",
+                "1",
+                "taxa-entrega",
+                "01310100"
+              ]
+            }
+          }
         }
       ]
     },
@@ -196,7 +236,7 @@
             "header": [],
             "body": {
               "mode": "raw",
-              "raw": "{\n    \"nome\": \"Pizza Margherita\",\n    \"descricao\": \"Molho de tomate, muçarela e manjericão\",\n    \"categoria\": \"Pizza\",\n    \"preco\": 45.90,\n    \"disponivel\": true,\n    \"restaurante\": { \"id\": 1 }\n}",
+              "raw": "{\n    \"nome\": \"Pizza Margherita\",\n    \"descricao\": \"Molho de tomate, muçarela e manjericão\",\n    \"categoria\": \"Pizza\",\n    \"preco\": 45.90,\n    \"disponivel\": true,\n    \"restauranteId\": 1\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -204,16 +244,16 @@
               }
             },
             "url": {
-              "raw": "{{baseUrl}}/produtos",
+              "raw": "{{baseUrl}}/api/produtos",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
+                "api",
                 "produtos"
               ]
             }
-          },
-          "response": []
+          }
         },
         {
           "name": "Listar por Restaurante",
@@ -221,18 +261,108 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/produtos/restaurante/1",
+              "raw": "{{baseUrl}}/api/produtos/restaurantes/1/produtos",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
+                "api",
                 "produtos",
-                "restaurante",
+                "restaurantes",
+                "1",
+                "produtos"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Buscar por ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/produtos/1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "produtos",
                 "1"
               ]
             }
-          },
-          "response": []
+          }
+        },
+        {
+          "name": "Buscar por Categoria",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/produtos/categoria/Pizza",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "produtos",
+                "categoria",
+                "Pizza"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Atualizar Produto",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"nome\": \"Pizza Margherita Especial\",\n    \"descricao\": \"Molho, muçarela, manjericão e borda recheada\",\n    \"categoria\": \"Pizza\",\n    \"preco\": 55.00,\n    \"disponivel\": true,\n    \"restauranteId\": 1\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/produtos/1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "produtos",
+                "1"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Alterar Disponibilidade",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/produtos/1/disponibilidade?disponivel=false",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "produtos",
+                "1",
+                "disponibilidade"
+              ],
+              "query": [
+                {
+                  "key": "disponivel",
+                  "value": "false"
+                }
+              ]
+            }
+          }
         }
       ]
     },
@@ -246,7 +376,7 @@
             "header": [],
             "body": {
               "mode": "raw",
-              "raw": "{\n    \"cliente\": { \"id\": 1 },\n    \"restaurante\": { \"id\": 1 },\n    \"enderecoEntrega\": \"Rua das Flores, 123\",\n    \"taxaEntrega\": 7.50,\n    \"valorTotal\": 99.30,\n    \"status\": \"PENDENTE\",\n    \"itens\": [\n        {\n            \"quantidade\": 2,\n            \"precoUnitario\": 45.90,\n            \"subtotal\": 91.80,\n            \"produto\": { \"id\": 1 }\n        }\n    ]\n}",
+              "raw": "{\n    \"clienteId\": 1,\n    \"restauranteId\": 1,\n    \"enderecoEntrega\": \"Rua das Flores, 123\",\n    \"itens\": [\n        {\n            \"produtoId\": 1,\n            \"quantidade\": 2\n        }\n    ]\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -254,42 +384,16 @@
               }
             },
             "url": {
-              "raw": "{{baseUrl}}/pedidos",
+              "raw": "{{baseUrl}}/api/pedidos",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
+                "api",
                 "pedidos"
               ]
             }
-          },
-          "response": []
-        },
-        {
-          "name": "Atualizar Status do Pedido",
-          "request": {
-            "method": "PATCH",
-            "header": [],
-            "url": {
-              "raw": "{{baseUrl}}/pedidos/1/status?status=CONFIRMADO",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "pedidos",
-                "1",
-                "status"
-              ],
-              "query": [
-                {
-                  "key": "status",
-                  "value": "CONFIRMADO",
-                  "description": "StatusPedidos: PENDENTE, CONFIRMADO, ENTREGUE, CANCELADO, etc."
-                }
-              ]
-            }
-          },
-          "response": []
+          }
         },
         {
           "name": "Listar Pedidos por Cliente",
@@ -297,18 +401,61 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/pedidos/cliente/1",
+              "raw": "{{baseUrl}}/api/clientes/1/pedidos",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
+                "api",
+                "clientes",
+                "1",
+                "pedidos"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Atualizar Status do Pedido",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/pedidos/1/status?status=CONFIRMADO",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
                 "pedidos",
-                "cliente",
+                "1",
+                "status"
+              ],
+              "query": [
+                {
+                  "key": "status",
+                  "value": "CONFIRMADO"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Cancelar Pedido",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/pedidos/1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "pedidos",
                 "1"
               ]
             }
-          },
-          "response": []
+          }
         }
       ]
     },
@@ -316,12 +463,12 @@
       "name": "ItemPedidos",
       "item": [
         {
-          "name": "Listar Itens pedido",
+          "name": "Listar Todos os Itens",
           "request": {
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/item-pedidos",
+              "raw": "{{baseUrl}}/api/item-pedidos",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -329,16 +476,15 @@
                 "item-pedidos"
               ]
             }
-          },
-          "response": []
+          }
         },
         {
-          "name": "Listar Itens pedidoID",
+          "name": "Listar Itens por Pedido ID",
           "request": {
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/item-pedidos/pedido/1",
+              "raw": "{{baseUrl}}/api/item-pedidos/pedido/1",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -348,8 +494,7 @@
                 "1"
               ]
             }
-          },
-          "response": []
+          }
         }
       ]
     },
@@ -362,7 +507,7 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/relatorio/total-vendas-por-restaurante",
+              "raw": "{{baseUrl}}/api/relatorio/total-vendas-por-restaurante",
               "host": [
                 "{{baseUrl}}"
               ],

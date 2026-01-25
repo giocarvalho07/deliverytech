@@ -21,7 +21,7 @@ public class GlobalExceptionHandler {
     // Trata BusinessException -> Retorna 422 (Unprocessable Entity)
     @ExceptionHandler(BusinessException.class)
     public ResponseEntity<String> handleBusiness(BusinessException ex) {
-        return ResponseEntity.status(HttpStatus.UNPROCESSABLE_CONTENT).body(ex.getMessage());
+        return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(ex.getMessage());
     }
 
     // Trata erros de @Valid (ValidationException) -> Retorna 400

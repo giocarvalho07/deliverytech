@@ -1,13 +1,13 @@
 package com.deliverytech.delivery_api.controller;
 
-import com.deliverytech.delivery_api.model.ItemPedido;
+import com.deliverytech.delivery_api.dto.response.ItemPedidoResponseDTO;
 import com.deliverytech.delivery_api.service.ItemPedidoService;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 
+
 @RestController
-@RequestMapping("/item-pedidos") // Este comando "mata" o erro 404
+@RequestMapping("/api/item-pedidos")
 public class ItemPedidoController {
 
     private final ItemPedidoService itemPedidoService;
@@ -17,12 +17,12 @@ public class ItemPedidoController {
     }
 
     @GetMapping
-    public List<ItemPedido> listarTodos() {
+    public List<ItemPedidoResponseDTO> listarTodos() {
         return itemPedidoService.listarTodos();
     }
 
     @GetMapping("/pedido/{id}")
-    public List<ItemPedido> listarPorPedido(@PathVariable Long id) {
+    public List<ItemPedidoResponseDTO> listarPorPedido(@PathVariable Long id) {
         return itemPedidoService.listarPorPedido(id);
     }
 }
