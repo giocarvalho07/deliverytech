@@ -2,6 +2,8 @@ package com.deliverytech.delivery_api.service;
 
 import com.deliverytech.delivery_api.dto.request.ClienteRequestDTO;
 import com.deliverytech.delivery_api.dto.response.ClienteResponseDTO;
+import com.deliverytech.delivery_api.exepction.BusinessException;
+import com.deliverytech.delivery_api.exepction.EntityNotFoundException;
 import com.deliverytech.delivery_api.model.Cliente;
 import com.deliverytech.delivery_api.repository.ClienteRepository;
 import org.modelmapper.ModelMapper;
@@ -23,11 +25,11 @@ public class ClienteService {
         this.modelMapper = modelMapper;
     }
 
-    // cadastrarCliente(ClienteDTO dto) - Validar email único
+    // cadastrarCliente - Valida email único
     @Transactional
     public ClienteResponseDTO cadastrarCliente(ClienteRequestDTO dto) {
         if (clienteRepository.findByEmail(dto.getEmail()).isPresent()) {
-            throw new RuntimeException("Já existe um cliente cadastrado com este e-mail: " + dto.getEmail());
+            throw new BusinessException("Já existe um cliente cadastrado com este e-mail: " + dto.getEmail());
         }
 
         Cliente cliente = modelMapper.map(dto, Cliente.class);
@@ -37,52 +39,51 @@ public class ClienteService {
         return modelMapper.map(clienteRepository.save(cliente), ClienteResponseDTO.class);
     }
 
-    // buscarClientePorId(Long id) - Com tratamento de não encontrado
+    // buscarClientePorId
     public ClienteResponseDTO buscarClientePorId(Long id) {
         Cliente cliente = clienteRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Cliente não encontrado com o ID: " + id));
+                .orElseThrow(() -> new EntityNotFoundException("Cliente não encontrado com o ID: " + id));
         return modelMapper.map(cliente, ClienteResponseDTO.class);
     }
 
-    // buscarClientePorEmail(String email) - Para login/autenticação
+    // buscarClientePorEmail
     public ClienteResponseDTO buscarClientePorEmail(String email) {
         Cliente cliente = clienteRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("Cliente não encontrado com o e-mail: " + email));
+                .orElseThrow(() -> new EntityNotFoundException("Cliente não encontrado com o e-mail: " + email));
         return modelMapper.map(cliente, ClienteResponseDTO.class);
     }
 
-    // listarClientesAtivos() - Apenas clientes ativos
+    // listarClientesAtivos - Apenas clientes ativos
     public List<ClienteResponseDTO> listarClientesAtivos() {
         return clienteRepository.findByAtivoTrue().stream()
                 .map(cliente -> modelMapper.map(cliente, ClienteResponseDTO.class))
                 .collect(Collectors.toList());
     }
 
-    // atualizarCliente(Long id, ClienteDTO dto) - Validar existência
+    // atualizarCliente - Valida existência e e-mail único
     @Transactional
     public ClienteResponseDTO atualizarCliente(Long id, ClienteRequestDTO dto) {
         Cliente clienteExistente = clienteRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Não é possível atualizar: Cliente inexistente."));
+                .orElseThrow(() -> new EntityNotFoundException("Não é possível atualizar: Cliente ID " + id + " não existe."));
 
         // Validação de e-mail duplicado ao trocar e-mail
         if (!clienteExistente.getEmail().equals(dto.getEmail()) &&
                 clienteRepository.findByEmail(dto.getEmail()).isPresent()) {
-            throw new RuntimeException("O novo e-mail já está em uso por outro cliente.");
+            throw new BusinessException("O novo e-mail informado já está em uso por outro cliente.");
         }
 
-        // Atualiza os dados da entidade com os dados do DTO
         modelMapper.map(dto, clienteExistente);
-
         return modelMapper.map(clienteRepository.save(clienteExistente), ClienteResponseDTO.class);
     }
 
-    // ativarDesativarCliente(Long id) - Toggle status ativo
+    // ativarDesativarCliente - Toggle status
     @Transactional
     public void ativarDesativarCliente(Long id) {
         Cliente cliente = clienteRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Cliente não encontrado."));
+                .orElseThrow(() -> new EntityNotFoundException("Falha ao alterar status: Cliente ID " + id + " não localizado."));
 
-        cliente.setAtivo(!cliente.isAtivo()); // Inverte o status atual (Toggle)
+        cliente.setAtivo(!cliente.isAtivo());
         clienteRepository.save(cliente);
     }
+
 }

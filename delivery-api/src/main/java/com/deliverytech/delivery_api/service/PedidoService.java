@@ -3,6 +3,8 @@ package com.deliverytech.delivery_api.service;
 import com.deliverytech.delivery_api.dto.request.PedidoRequestDTO;
 import com.deliverytech.delivery_api.dto.response.PedidoResponseDTO;
 import com.deliverytech.delivery_api.enums.StatusPedidos;
+import com.deliverytech.delivery_api.exepction.BusinessException;
+import com.deliverytech.delivery_api.exepction.EntityNotFoundException;
 import com.deliverytech.delivery_api.model.*;
 import com.deliverytech.delivery_api.repository.ClienteRepository;
 import com.deliverytech.delivery_api.repository.PedidoRepository;
@@ -10,6 +12,7 @@ import com.deliverytech.delivery_api.repository.ProdutoRepository;
 import com.deliverytech.delivery_api.repository.RestauranteRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.TransactionException;
 import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -39,43 +42,61 @@ public class PedidoService {
 
     @Transactional
     public PedidoResponseDTO criarPedido(PedidoRequestDTO dto) {
-        // Validar Cliente Ativo
-        Cliente cliente = clienteRepository.findById(dto.getClienteId())
-                .orElseThrow(() -> new RuntimeException("Cliente não encontrado"));
-        if (!cliente.isAtivo()) {
-            throw new RuntimeException("Pedido negado: Cliente está inativo.");
+        try {
+            // Validar Cliente Ativo
+            Cliente cliente = clienteRepository.findById(dto.getClienteId())
+                    .orElseThrow(() -> new EntityNotFoundException("Cliente não encontrado com ID: " + dto.getClienteId()));
+
+            if (!cliente.isAtivo()) {
+                throw new BusinessException("Pedido negado: O cliente selecionado está inativo.");
+            }
+
+            // Validar Restaurante
+            Restaurante restaurante = restauranteRepository.findById(dto.getRestauranteId())
+                    .orElseThrow(() -> new EntityNotFoundException("Restaurante não encontrado com ID: " + dto.getRestauranteId()));
+
+            Pedido pedido = new Pedido();
+            pedido.setCliente(cliente);
+            pedido.setRestaurante(restaurante);
+            pedido.setEnderecoEntrega(cliente.getEndereco());
+            pedido.setTaxaEntrega(restaurante.getTaxaEntrega());
+            pedido.setStatus(StatusPedidos.PENDENTE);
+            pedido.setDataPedido(LocalDateTime.now());
+            pedido.setNumeroPedido(UUID.randomUUID().toString().substring(0, 8).toUpperCase());
+
+            // Processar Itens e Validar disponibilidade/pertencimento
+            processarItens(dto, pedido, restaurante);
+
+            // Calcular Total Pedido
+            pedido.setValorTotal(calcularTotalPedido(pedido.getItens(), pedido.getTaxaEntrega()));
+
+            return modelMapper.map(pedidoRepository.save(pedido), PedidoResponseDTO.class);
+
+        } catch (EntityNotFoundException | BusinessException e) {
+            throw e; // Re-lança exceções de negócio para serem tratadas pelo Handler
+        } catch (Exception e) {
+            throw new TransactionException("Erro interno ao processar a transação do pedido: " + e.getMessage()) {
+            };
         }
-
-        // Validar Restaurante
-        Restaurante restaurante = restauranteRepository.findById(dto.getRestauranteId())
-                .orElseThrow(() -> new RuntimeException("Restaurante não encontrado"));
-
-        Pedido pedido = new Pedido();
-        pedido.setCliente(cliente);
-        pedido.setRestaurante(restaurante);
-        pedido.setEnderecoEntrega(cliente.getEndereco());
-        pedido.setTaxaEntrega(restaurante.getTaxaEntrega());
-        pedido.setStatus(StatusPedidos.PENDENTE);
-        pedido.setDataPedido(LocalDateTime.now());
-        pedido.setNumeroPedido(UUID.randomUUID().toString().substring(0, 8).toUpperCase());
-
-        // Processar Itens
-        processarItens(dto, pedido, restaurante);
-
-        // Aciona o método -> Calcular Total Pedido
-        pedido.setValorTotal(calcularTotalPedido(pedido.getItens(), pedido.getTaxaEntrega()));
-
-        return modelMapper.map(pedidoRepository.save(pedido), PedidoResponseDTO.class);
     }
 
-    // Método auxiliar privado para organizar a criação do objeto
     private void processarItens(PedidoRequestDTO dto, Pedido pedido, Restaurante restaurante) {
+        if (dto.getItens() == null || dto.getItens().isEmpty()) {
+            throw new BusinessException("Um pedido deve conter pelo menos um item.");
+        }
+
         dto.getItens().forEach(itemDto -> {
             Produto produto = produtoRepository.findById(itemDto.getProdutoId())
-                    .orElseThrow(() -> new RuntimeException("Produto não encontrado"));
+                    .orElseThrow(() -> new EntityNotFoundException("Produto ID " + itemDto.getProdutoId() + " não existe."));
 
+            // Validar se produto pertence ao restaurante
             if (!produto.getRestaurante().getId().equals(restaurante.getId())) {
-                throw new RuntimeException("O produto " + produto.getNome() + " não pertence a este restaurante.");
+                throw new BusinessException("O produto " + produto.getNome() + " não pertence ao restaurante " + restaurante.getNome());
+            }
+
+            // Validar disponibilidade
+            if (!produto.getDisponivel()) {
+                throw new BusinessException("O produto " + produto.getNome() + " não está disponível para pedidos.");
             }
 
             ItemPedido item = new ItemPedido();
@@ -89,7 +110,6 @@ public class PedidoService {
         });
     }
 
-    // Calcular Total Pedido
     public BigDecimal calcularTotalPedido(List<ItemPedido> itens, BigDecimal taxaEntrega) {
         BigDecimal totalItens = itens.stream()
                 .map(ItemPedido::getSubtotal)
@@ -97,8 +117,10 @@ public class PedidoService {
         return totalItens.add(taxaEntrega);
     }
 
-    // Buscar por Cliente (Histórico)
     public List<PedidoResponseDTO> buscarPedidosPorCliente(Long clienteId) {
+        if (!clienteRepository.existsById(clienteId)) {
+            throw new EntityNotFoundException("Cliente ID " + clienteId + " não encontrado.");
+        }
         return pedidoRepository.findByClienteId(clienteId).stream()
                 .map(pedido -> modelMapper.map(pedido, PedidoResponseDTO.class))
                 .collect(Collectors.toList());
@@ -106,18 +128,18 @@ public class PedidoService {
 
     public PedidoResponseDTO buscarPedidoPorId(Long id) {
         Pedido pedido = pedidoRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Pedido não encontrado"));
+                .orElseThrow(() -> new EntityNotFoundException("Pedido ID " + id + " não encontrado."));
         return modelMapper.map(pedido, PedidoResponseDTO.class);
     }
 
     @Transactional
     public PedidoResponseDTO atualizarStatusPedido(Long id, StatusPedidos novoStatus) {
         Pedido pedido = pedidoRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Pedido não encontrado"));
+                .orElseThrow(() -> new EntityNotFoundException("Pedido não localizado para atualização."));
 
-        // Validar transições (Exemplo: não pode mudar se estiver cancelado)
+        // Validar transições permitidas
         if (pedido.getStatus() == StatusPedidos.CANCELADO || pedido.getStatus() == StatusPedidos.ENTREGUE) {
-            throw new RuntimeException("Não é possível alterar o status de um pedido finalizado.");
+            throw new BusinessException("Não é possível alterar o status de um pedido já finalizado (" + pedido.getStatus() + ").");
         }
 
         pedido.setStatus(novoStatus);
@@ -127,16 +149,14 @@ public class PedidoService {
     @Transactional
     public void cancelarPedido(Long id) {
         Pedido pedido = pedidoRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Pedido não encontrado"));
+                .orElseThrow(() -> new EntityNotFoundException("Pedido não localizado para cancelamento."));
 
-        // Apenas se permitido pelo status
+        // Validar se cancelamento é permitido pelo status
         if (pedido.getStatus() != StatusPedidos.PENDENTE) {
-            throw new RuntimeException("O pedido só pode ser cancelado enquanto estiver PENDENTE.");
+            throw new BusinessException("O cancelamento só é permitido para pedidos com status PENDENTE.");
         }
 
         pedido.setStatus(StatusPedidos.CANCELADO);
         pedidoRepository.save(pedido);
     }
-
-
 }

@@ -1,172 +1,135 @@
 package com.deliverytech.delivery_api.config;
 
-import com.deliverytech.delivery_api.enums.StatusPedidos;
-import com.deliverytech.delivery_api.model.*;
-import com.deliverytech.delivery_api.repository.*;
+import com.deliverytech.delivery_api.dto.request.*;
+import com.deliverytech.delivery_api.dto.response.ClienteResponseDTO;
+import com.deliverytech.delivery_api.dto.response.PedidoResponseDTO;
+import com.deliverytech.delivery_api.dto.response.ProdutoResponseDTO;
+import com.deliverytech.delivery_api.dto.response.RestauranteResponseDTO;
+import com.deliverytech.delivery_api.service.ClienteService;
+import com.deliverytech.delivery_api.service.PedidoService;
+import com.deliverytech.delivery_api.service.ProdutoService;
+import com.deliverytech.delivery_api.service.RestauranteService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Configuration;
-
+import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
-import java.util.Arrays;
 import java.util.List;
+
 
 @Configuration
 public class DataLoader implements CommandLineRunner {
 
     private static final Logger logger = LoggerFactory.getLogger(DataLoader.class);
 
-    private final ClienteRepository clienteRepository;
-    private final RestauranteRepository restauranteRepository;
-    private final ProdutoRepository produtoRepository;
-    private final PedidoRepository pedidoRepository;
-    private final ItemPedidoRespository itemPedidoRespository;
+    private final ClienteService clienteService;
+    private final RestauranteService restauranteService;
+    private final ProdutoService produtoService;
+    private final PedidoService pedidoService;
 
-    public DataLoader(ClienteRepository clienteRepository,
-                      RestauranteRepository restauranteRepository,
-                      ProdutoRepository produtoRepository,
-                      PedidoRepository pedidoRepository,
-                     ItemPedidoRespository itemPedidoRespository ) {
-        this.clienteRepository = clienteRepository;
-        this.restauranteRepository = restauranteRepository;
-        this.produtoRepository = produtoRepository;
-        this.pedidoRepository = pedidoRepository;
-        this.itemPedidoRespository = itemPedidoRespository;
+    public DataLoader(ClienteService clienteService,
+                      RestauranteService restauranteService,
+                      ProdutoService produtoService,
+                      PedidoService pedidoService) {
+        this.clienteService = clienteService;
+        this.restauranteService = restauranteService;
+        this.produtoService = produtoService;
+        this.pedidoService = pedidoService;
     }
 
     @Override
-    public void run(String... args) throws Exception {
-        logger.info("Iniciando a carga de dados de teste...");
+    @Transactional // Garante que a sessão do Hibernate permaneça aberta durante toda a carga
+    public void run(String... args) {
+        try {
+            // VERIFICAÇÃO DE SEGURANÇA: Evita o erro de ObjectOptimisticLockingFailureException
+            // Se já existirem clientes, assumimos que a carga já foi feita nesta sessão do banco.
+            if (!clienteService.listarClientesAtivos().isEmpty()) {
+                logger.info("--- DADOS JÁ PRESENTES NO BANCO. PULANDO CARGA INICIAL PARA EVITAR CONFLITOS ---");
+                return;
+            }
 
-        // 1. Inserir Clientes
-        Cliente c1 = criarCliente("João Silva", "joao@email.com", "(11) 99999-1111", "Rua A, 123 - São Paulo/SP");
-        Cliente c2 = criarCliente("Maria Santos", "maria@email.com", "(11) 99999-2222", "Rua B, 456 - São Paulo/SP");
-        Cliente c3 = criarCliente("Pedro Oliveira", "pedro@email.com", "(11) 99999-3333", "Rua C, 789 - São Paulo/SP");
-        clienteRepository.saveAll(Arrays.asList(c1, c2, c3));
+            logger.info("--- INICIANDO CARGA DE DADOS ---");
 
-        // 2. Inserir Restaurantes
-        Restaurante r1 = criarRestaurante("Pizzaria Bella", "Italiana", "Av. Paulista, 1000", "(11) 3333-1111", 5.0, 4.5);
-        Restaurante r2 = criarRestaurante("Burger House", "Hamburgueria", "Rua Augusta, 500", "(11) 3333-2222", 3.5, 4.2);
-        Restaurante r3 = criarRestaurante("Sushi Master", "Japonesa", "Rua Liberdade, 200", "(11) 3333-3333", 8.0, 4.8);
-        restauranteRepository.saveAll(Arrays.asList(r1, r2, r3));
+            // 1. Inserir Clientes
+            ClienteResponseDTO c1 = clienteService.cadastrarCliente(criarClienteDTO("João Silva", "joao@email.com", "(11) 99999-1111", "Rua A, 123"));
+            ClienteResponseDTO c2 = clienteService.cadastrarCliente(criarClienteDTO("Maria Santos", "maria@email.com", "(11) 99999-2222", "Rua B, 456"));
+            clienteService.cadastrarCliente(criarClienteDTO("Pedro Oliveira", "pedro@email.com", "(11) 99999-3333", "Rua C, 789"));
 
-        // 3. Inserir Produtos
-        Produto p1 = criarProduto("Pizza Margherita", 35.90, "Pizza", r1);
-        Produto p4 = criarProduto("X-Burger", 18.90, "Hambúrguer", r2);
-        Produto p7 = criarProduto("Combo Sashimi", 45.90, "Sashimi", r3);
-        produtoRepository.saveAll(Arrays.asList(p1, p4, p7));
+            // 2. Inserir Restaurantes
+            RestauranteResponseDTO r1 = restauranteService.cadastrarRestaurante(criarRestauranteDTO("Pizzaria Bella", "Italiana", "Av. Paulista, 1000", 5.0));
+            RestauranteResponseDTO r2 = restauranteService.cadastrarRestaurante(criarRestauranteDTO("Burger House", "Hamburgueria", "Rua Augusta, 500", 3.5));
+            RestauranteResponseDTO r3 = restauranteService.cadastrarRestaurante(criarRestauranteDTO("Sushi Master", "Japonesa", "Rua Liberdade, 200", 8.0));
 
-        // 4. Inserir Pedidos
-        Pedido ped1 = criarPedido("PED1234567890", StatusPedidos.PENDENTE, 5.0, 40.90, c1, r1);
-        Pedido ped2 = criarPedido("PED1234567891", StatusPedidos.CONFIRMADO, 3.5, 22.40, c2, r2);
-        Pedido ped3 = criarPedido("PED1234567892", StatusPedidos.ENTREGUE, 8.0, 53.90, c3, r3);
-        pedidoRepository.saveAll(Arrays.asList(ped1, ped2, ped3));
+            // 3. Inserir Produtos (Referenciando IDs gerados dinamicamente)
+            ProdutoResponseDTO p1 = produtoService.cadastrarProduto(criarProdutoDTO("Pizza Margherita", 35.90, "Pizza", r1.getId(), "Mussarela e manjericão"));
+            ProdutoResponseDTO p4 = produtoService.cadastrarProduto(criarProdutoDTO("X-Burger", 18.90, "Hambúrguer", r2.getId(), "Queijo, alface e tomate"));
+            ProdutoResponseDTO p7 = produtoService.cadastrarProduto(criarProdutoDTO("Combo Sashimi", 45.90, "Sashimi", r3.getId(), "15 peças variadas"));
 
+            // 4. Inserir Pedidos Iniciais
+            pedidoService.criarPedido(criarPedidoDTO(c1.getId(), r1.getId(), p1.getId(), 1));
+            pedidoService.criarPedido(criarPedidoDTO(c2.getId(), r2.getId(), p4.getId(), 1));
 
-        // 5. Inserir Itens dos Pedidos
-        ItemPedido item1 = criarItemPedido(1, 35.90, ped1, p1); // Pizza no Pedido 1
-        ItemPedido item2 = criarItemPedido(1, 18.90, ped2, p4); // Burger no Pedido 2
-        ItemPedido item3 = criarItemPedido(1, 45.90, ped3, p7); // Sushi no Pedido 3
+            executarCenariosDeTeste(c1, c2, r1, r2, r3, p4, p7);
 
-        itemPedidoRespository.saveAll(Arrays.asList(item1, item2, item3));
+            logger.info("--- CARGA E TESTES CONCLUÍDOS COM SUCESSO ---");
 
-        logger.info("Carga de dados finalizada com sucesso!");
-        logger.info("Clientes cadastrados: {}", clienteRepository.count());
-        logger.info("Restaurantes cadastrados: {}", restauranteRepository.count());
-        logger.info("Produtos cadastrados: {}", produtoRepository.count());
-        logger.info("Pedidos cadastrados: {}", pedidoRepository.count());
-        logger.info("Itens Pedidos cadastrados: {}", itemPedidoRespository.count());
-
-
-
-        logger.info("---------- EXECUTANDO CENÁRIOS DE TESTE 2----------");
-
-        // 🔎 Cenário 1: Busca de Cliente por Email
-        clienteRepository.findByEmail("joao@email.com").ifPresent(c ->
-                logger.info("Cenário 1 (Email) - Sucesso: Cliente encontrado: {}", c.getNome())
-        );
-
-        // 🍔 Cenário 2: Produtos por Restaurante
-        List<Produto> produtos = produtoRepository.findByRestauranteId(1L);
-        logger.info("Cenário 2 (Produtos) - Sucesso: Itens encontrados: {}", produtos.size());
-
-        // 📅 Cenário 3: Pedidos Recentes
-        List<Pedido> pedidosRecentes = pedidoRepository.findTop10ByOrderByDataPedidoDesc();
-        logger.info("Cenário 3 (Pedidos) - Sucesso: Pedidos recuperados: {}", pedidosRecentes.size());
-
-        // 💰 Cenário 4: Restaurantes por Taxa
-        List<Restaurante> baratos = restauranteRepository.findByTaxaEntregaLessThanEqual(BigDecimal.valueOf(5.00));
-        logger.info("Cenário 4 (Taxa) - Sucesso: Restaurantes com taxa <= 5.00: {}", baratos.size());
-
-        logger.info("--------------------------------------------------");
+        } catch (Exception e) {
+            logger.error("ERRO CRÍTICO NA CARGA DE DADOS: {}", e.getMessage());
+            // Não relançamos a exceção para não impedir a aplicação de subir,
+            // mas logamos o stacktrace para depuração.
+            e.printStackTrace();
+        }
     }
 
-    // Métodos auxiliares para limpar o código (usando Setters para evitar erro de construtor)
+    private void executarCenariosDeTeste(ClienteResponseDTO c1, ClienteResponseDTO c2,
+                                         RestauranteResponseDTO r1, RestauranteResponseDTO r2,
+                                         RestauranteResponseDTO r3, ProdutoResponseDTO p4,
+                                         ProdutoResponseDTO p7) {
+        logger.info("--- EXECUTANDO CENÁRIOS DE TESTE ---");
 
-    private Cliente criarCliente(String nome, String email, String tel, String end) {
-        Cliente c = new Cliente();
-        c.setNome(nome);
-        c.setEmail(email);
-        c.setTelefone(tel);
-        c.setEndereco(end);
-        c.setDataCadastro(LocalDateTime.now());
-        c.setAtivo(true);
-        return c;
+        // Cenário 1: Busca por Email
+        logger.info("Cenário 1: Cliente encontrado: {}", clienteService.buscarClientePorEmail("joao@email.com").getNome());
+
+        // Cenário 2: Produtos por Restaurante
+        logger.info("Cenário 2: Itens no {}: {}", r1.getNome(), produtoService.buscarProdutosPorRestaurante(r1.getId()).size());
+
+        // Cenário 5: Pedido Extra João
+        PedidoResponseDTO extra1 = pedidoService.criarPedido(criarPedidoDTO(c1.getId(), r2.getId(), p4.getId(), 2));
+        logger.info("Cenário 5: Pedido {} criado para João. Total: R$ {}", extra1.getNumeroPedido(), extra1.getValorTotal());
+
+        // Cenário 6: Pedido Extra Maria
+        PedidoResponseDTO extra2 = pedidoService.criarPedido(criarPedidoDTO(c2.getId(), r3.getId(), p7.getId(), 1));
+        logger.info("Cenário 6: Pedido {} criado para Maria. Total: R$ {}", extra2.getNumeroPedido(), extra2.getValorTotal());
     }
 
-    private Restaurante criarRestaurante(String nome, String cat, String end, String tel, Double taxa, Double aval) {
-        Restaurante r = new Restaurante();
-        r.setNome(nome);
-        r.setCategoria(cat);
-        r.setEndereco(end);
-        r.setTelefone(tel);
-
-        // Converte a taxa de entrega para BigDecimal
-        r.setTaxaEntrega(BigDecimal.valueOf(taxa));
-
-        // Converte a avaliação para BigDecimal (ajuste para o erro da linha 95)
-        r.setAvaliacao(BigDecimal.valueOf(aval));
-
-        r.setAtivo(true);
-        return r;
+    // --- MÉTODOS AUXILIARES (Sem alterações, apenas limpeza) ---
+    private ClienteRequestDTO criarClienteDTO(String nome, String email, String tel, String end) {
+        ClienteRequestDTO dto = new ClienteRequestDTO();
+        dto.setNome(nome); dto.setEmail(email); dto.setTelefone(tel); dto.setEndereco(end);
+        return dto;
     }
 
-    private Produto criarProduto(String nome, Double preco, String cat, Restaurante rest) {
-        Produto p = new Produto();
-        p.setNome(nome);
-        // CONVERSÃO AQUI: Double para BigDecimal
-        p.setPreco(BigDecimal.valueOf(preco));
-        p.setCategoria(cat);
-        p.setRestaurante(rest);
-        p.setDisponivel(true);
-        return p;
+    private RestauranteRequestDTO criarRestauranteDTO(String nome, String cat, String end, Double taxa) {
+        RestauranteRequestDTO dto = new RestauranteRequestDTO();
+        dto.setNome(nome); dto.setEndereco(end); dto.setTaxaEntrega(BigDecimal.valueOf(taxa));
+        dto.setAtivo(true);
+        return dto;
     }
 
-    private Pedido criarPedido(String num, StatusPedidos status, Double taxa, Double total, Cliente c, Restaurante r) {
-        Pedido p = new Pedido();
-        p.setNumeroPedido(num);
-        p.setStatus(status);
-        p.setDataPedido(LocalDateTime.now());
-        // CONVERSÕES AQUI: Double para BigDecimal
-        p.setTaxaEntrega(BigDecimal.valueOf(taxa));
-        p.setValorTotal(BigDecimal.valueOf(total));
-        p.setEnderecoEntrega(c.getEndereco());
-        p.setCliente(c);
-        p.setRestaurante(r);
-        return p;
+    private ProdutoRequestDTO criarProdutoDTO(String nome, Double preco, String cat, Long restId, String desc) {
+        ProdutoRequestDTO dto = new ProdutoRequestDTO();
+        dto.setNome(nome); dto.setPreco(BigDecimal.valueOf(preco)); dto.setCategoria(cat);
+        dto.setDescricao(desc); dto.setDisponivel(true); dto.setRestauranteId(restId);
+        return dto;
     }
 
-    private ItemPedido criarItemPedido(Integer qtd, Double precoUnit, Pedido ped, Produto prod) {
-        ItemPedido item = new ItemPedido();
-        item.setQuantidade(qtd);
-        item.setPrecoUnitario(BigDecimal.valueOf(precoUnit));
-        // Calcula o subtotal automaticamente: qtd * precoUnit
-        BigDecimal subtotal = BigDecimal.valueOf(precoUnit).multiply(BigDecimal.valueOf(qtd));
-        item.setSubtotal(subtotal);
-        item.setPedido(ped);
-        item.setProduto(prod);
-        return item;
+    private PedidoRequestDTO criarPedidoDTO(Long clienteId, Long restId, Long prodId, Integer qtd) {
+        PedidoRequestDTO dto = new PedidoRequestDTO();
+        dto.setClienteId(clienteId); dto.setRestauranteId(restId);
+        ItemPedidoRequestDTO item = new ItemPedidoRequestDTO();
+        item.setProdutoId(prodId); item.setQuantidade(qtd);
+        dto.setItens(List.of(item));
+        return dto;
     }
 }

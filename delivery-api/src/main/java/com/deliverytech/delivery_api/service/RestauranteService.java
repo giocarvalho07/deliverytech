@@ -2,6 +2,8 @@ package com.deliverytech.delivery_api.service;
 
 import com.deliverytech.delivery_api.dto.request.RestauranteRequestDTO;
 import com.deliverytech.delivery_api.dto.response.RestauranteResponseDTO;
+import com.deliverytech.delivery_api.exepction.BusinessException;
+import com.deliverytech.delivery_api.exepction.EntityNotFoundException;
 import com.deliverytech.delivery_api.model.Restaurante;
 import com.deliverytech.delivery_api.repository.RestauranteRepository;
 import org.modelmapper.ModelMapper;
@@ -23,56 +25,72 @@ public class RestauranteService {
         this.modelMapper = modelMapper;
     }
 
-    // cadastrarRestaurante(RestauranteDTO dto)
+    // cadastrarRestaurante
     @Transactional
     public RestauranteResponseDTO cadastrarRestaurante(RestauranteRequestDTO dto) {
+        // Exemplo de validação de negócio: Taxa de entrega não pode ser negativa
+        if (dto.getTaxaEntrega() != null && dto.getTaxaEntrega().compareTo(BigDecimal.ZERO) < 0) {
+            throw new BusinessException("A taxa de entrega não pode ser um valor negativo.");
+        }
+
         Restaurante restaurante = modelMapper.map(dto, Restaurante.class);
         return modelMapper.map(restauranteRepository.save(restaurante), RestauranteResponseDTO.class);
     }
 
-    // buscarRestaurantePorId(Long id) - Com tratamento de erro
+    // buscarRestaurantePorId com tratamento de erro customizado
     public RestauranteResponseDTO buscarRestaurantePorId(Long id) {
         Restaurante restaurante = restauranteRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Restaurante não encontrado com o ID: " + id));
+                .orElseThrow(() -> new EntityNotFoundException("Restaurante não encontrado com o ID: " + id));
         return modelMapper.map(restaurante, RestauranteResponseDTO.class);
     }
 
-    // buscarRestaurantesPorCategoria(String categoria) - Filtro por categoria
+    // buscarRestaurantesPorCategoria - Filtro por categoria
     public List<RestauranteResponseDTO> buscarRestaurantesPorCategoria(String categoria) {
-        return restauranteRepository.findByCategoria(categoria).stream()
+        List<Restaurante> restaurantes = restauranteRepository.findByCategoria(categoria);
+        return restaurantes.stream()
                 .map(r -> modelMapper.map(r, RestauranteResponseDTO.class))
                 .collect(Collectors.toList());
     }
 
-    // buscarRestaurantesDisponiveis() - Apenas ativos
+    // buscarRestaurantesDisponiveis - Apenas ativos
     public List<RestauranteResponseDTO> buscarRestaurantesDisponiveis() {
         return restauranteRepository.findByAtivoTrue().stream()
                 .map(r -> modelMapper.map(r, RestauranteResponseDTO.class))
                 .collect(Collectors.toList());
     }
 
-    // atualizarRestaurante(Long id, RestauranteDTO dto)
+    // atualizarRestaurante - Validar existência e dados
     @Transactional
     public RestauranteResponseDTO atualizarRestaurante(Long id, RestauranteRequestDTO dto) {
         Restaurante restauranteExistente = restauranteRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Restaurante não encontrado para atualização."));
+                .orElseThrow(() -> new EntityNotFoundException("Não foi possível atualizar: Restaurante ID " + id + " não existe."));
+
+        // Garante que não altere para uma taxa negativa na atualização
+        if (dto.getTaxaEntrega() != null && dto.getTaxaEntrega().compareTo(BigDecimal.ZERO) < 0) {
+            throw new BusinessException("Valor de taxa de entrega inválido.");
+        }
 
         modelMapper.map(dto, restauranteExistente);
         return modelMapper.map(restauranteRepository.save(restauranteExistente), RestauranteResponseDTO.class);
     }
 
-    // calcularTaxaEntrega(Long restauranteId, String cep)
-    // Exemplo de lógica: Se o CEP for da mesma região, taxa base, senão taxa + adicional
+    // calcularTaxaEntrega
     public BigDecimal calcularTaxaEntrega(Long restauranteId, String cep) {
         Restaurante restaurante = restauranteRepository.findById(restauranteId)
-                .orElseThrow(() -> new RuntimeException("Restaurante inexistente."));
+                .orElseThrow(() -> new EntityNotFoundException("Cálculo de taxa abortado: Restaurante ID " + restauranteId + " não encontrado."));
+
+        if (cep == null || cep.isBlank()) {
+            throw new BusinessException("O CEP deve ser informado para o cálculo da taxa.");
+        }
 
         BigDecimal taxaBase = restaurante.getTaxaEntrega();
 
-        // Simulação de lógica por CEP: Se começar com "0", é entrega local
+        // Se o CEP começar com "0", é região local (taxa padrão)
+        // Se começar com outro número, adicionamos uma taxa de distância
         if (cep.startsWith("0")) {
             return taxaBase;
         }
-        return taxaBase.add(new BigDecimal("5.00")); // Adicional de distância
+
+        return taxaBase.add(new BigDecimal("5.00"));
     }
 }
