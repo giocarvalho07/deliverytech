@@ -1,6 +1,7 @@
 package com.deliverytech.delivery_api.controller;
 
 import com.deliverytech.delivery_api.dto.request.ProdutoRequestDTO;
+import com.deliverytech.delivery_api.dto.response.ApiSucessResponse;
 import com.deliverytech.delivery_api.dto.response.ProdutoResponseDTO;
 import com.deliverytech.delivery_api.service.ProdutoService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -8,9 +9,11 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+import java.net.URI;
+import java.time.LocalDateTime;
 import java.util.List;
 
 
@@ -32,8 +35,22 @@ public class ProdutoController {
             @ApiResponse(responseCode = "400", description = "Dados de entrada inválidos")
     })
     @PostMapping
-    public ResponseEntity<ProdutoResponseDTO> cadastrar(@Valid @RequestBody ProdutoRequestDTO dto) {
-        return new ResponseEntity<>(produtoService.cadastrarProduto(dto), HttpStatus.CREATED);
+    public ResponseEntity<ApiSucessResponse<ProdutoResponseDTO>> cadastrar(@Valid @RequestBody ProdutoRequestDTO dto) {
+        ProdutoResponseDTO novoProduto = produtoService.cadastrarProduto(dto);
+        // Header Location
+        URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
+                .path("/{id}")
+                .buildAndExpand(novoProduto.getId())
+                .toUri();
+
+        ApiSucessResponse<ProdutoResponseDTO> response = ApiSucessResponse.<ProdutoResponseDTO>builder()
+                .sucesso(true)
+                .mensagem("Produto cadastrado com sucesso")
+                .dados(novoProduto)
+                .timestamp(LocalDateTime.now())
+                .build();
+
+        return ResponseEntity.created(uri).body(response);
     }
 
     // GET /api/produtos/{id}
@@ -43,8 +60,15 @@ public class ProdutoController {
             @ApiResponse(responseCode = "404", description = "Produto não encontrado")
     })
     @GetMapping("/{id}")
-    public ResponseEntity<ProdutoResponseDTO> buscarPorId(@PathVariable Long id) {
-        return ResponseEntity.ok(produtoService.buscarProdutoPorId(id));
+    public ResponseEntity<ApiSucessResponse<ProdutoResponseDTO>> buscarPorId(@PathVariable Long id) {
+        ProdutoResponseDTO produto = produtoService.buscarProdutoPorId(id);
+
+        return ResponseEntity.ok(ApiSucessResponse.<ProdutoResponseDTO>builder()
+                .sucesso(true)
+                .mensagem("Produto localizado")
+                .dados(produto)
+                .timestamp(LocalDateTime.now())
+                .build());
     }
 
     // PUT /api/produtos/{id}
@@ -54,9 +78,15 @@ public class ProdutoController {
             @ApiResponse(responseCode = "404", description = "Produto não encontrado")
     })
     @PutMapping("/{id}")
-    public ResponseEntity<ProdutoResponseDTO> atualizar(@PathVariable Long id,
-                                                        @Valid @RequestBody ProdutoRequestDTO dto) {
-        return ResponseEntity.ok(produtoService.atualizarProduto(id, dto));
+    public ResponseEntity<ApiSucessResponse<ProdutoResponseDTO>> atualizar(@PathVariable Long id, @Valid @RequestBody ProdutoRequestDTO dto) {
+        ProdutoResponseDTO atualizado = produtoService.atualizarProduto(id, dto);
+
+        return ResponseEntity.ok(ApiSucessResponse.<ProdutoResponseDTO>builder()
+                .sucesso(true)
+                .mensagem("Produto atualizado com sucesso")
+                .dados(atualizado)
+                .timestamp(LocalDateTime.now())
+                .build());
     }
 
     // DELETE /api/produtos/{id}
@@ -78,8 +108,7 @@ public class ProdutoController {
             @ApiResponse(responseCode = "404", description = "Produto não encontrado")
     })
     @PatchMapping("/{id}/disponibilidade")
-    public ResponseEntity<Void> alterarDisponibilidade(@PathVariable Long id,
-                                                       @RequestParam boolean disponivel) {
+    public ResponseEntity<Void> alterarDisponibilidade(@PathVariable Long id, @RequestParam boolean disponivel) {
         produtoService.alterarDisponibilidade(id, disponivel);
         return ResponseEntity.noContent().build();
     }
@@ -91,8 +120,15 @@ public class ProdutoController {
             @ApiResponse(responseCode = "404", description = "Produto não encontrado")
     })
     @GetMapping("/restaurantes/{restauranteId}/produtos")
-    public ResponseEntity<List<ProdutoResponseDTO>> listarPorRestaurante(@PathVariable Long restauranteId) {
-        return ResponseEntity.ok(produtoService.buscarProdutosPorRestaurante(restauranteId));
+    public ResponseEntity<ApiSucessResponse<List<ProdutoResponseDTO>>> listarPorRestaurante(@PathVariable Long restauranteId) {
+        List<ProdutoResponseDTO> produtos = produtoService.buscarProdutosPorRestaurante(restauranteId);
+
+        return ResponseEntity.ok(ApiSucessResponse.<List<ProdutoResponseDTO>>builder()
+                .sucesso(true)
+                .mensagem("Produtos do restaurante " + restauranteId)
+                .dados(produtos)
+                .timestamp(LocalDateTime.now())
+                .build());
     }
 
     // GET /api/produtos/categoria/{categoria}
@@ -102,8 +138,15 @@ public class ProdutoController {
             @ApiResponse(responseCode = "404", description = "Produto não encontrado")
     })
     @GetMapping("/categoria/{categoria}")
-    public ResponseEntity<List<ProdutoResponseDTO>> buscarPorCategoria(@PathVariable String categoria) {
-        return ResponseEntity.ok(produtoService.buscarProdutosPorCategoria(categoria));
+    public ResponseEntity<ApiSucessResponse<List<ProdutoResponseDTO>>> buscarPorCategoria(@PathVariable String categoria) {
+        List<ProdutoResponseDTO> produtos = produtoService.buscarProdutosPorCategoria(categoria);
+
+        return ResponseEntity.ok(ApiSucessResponse.<List<ProdutoResponseDTO>>builder()
+                .sucesso(true)
+                .mensagem("Produtos encontrados na categoria " + categoria)
+                .dados(produtos)
+                .timestamp(LocalDateTime.now())
+                .build());
     }
 
     // GET /api/produtos/buscar?nome={nome}
@@ -113,7 +156,14 @@ public class ProdutoController {
             @ApiResponse(responseCode = "404", description = "Restaurante não encontrado")
     })
     @GetMapping("/buscar")
-    public ResponseEntity<List<ProdutoResponseDTO>> buscarPorNome(@RequestParam String nome) {
-        return ResponseEntity.ok(produtoService.buscarProdutosPorNome(nome));
+    public ResponseEntity<ApiSucessResponse<List<ProdutoResponseDTO>>> buscarPorNome(@RequestParam String nome) {
+        List<ProdutoResponseDTO> produtos = produtoService.buscarProdutosPorNome(nome);
+
+        return ResponseEntity.ok(ApiSucessResponse.<List<ProdutoResponseDTO>>builder()
+                .sucesso(true)
+                .mensagem("Resultados da busca por: " + nome)
+                .dados(produtos)
+                .timestamp(LocalDateTime.now())
+                .build());
     }
 }

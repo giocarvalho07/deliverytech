@@ -1,6 +1,7 @@
 package com.deliverytech.delivery_api.controller;
 
 import com.deliverytech.delivery_api.dto.request.PedidoRequestDTO;
+import com.deliverytech.delivery_api.dto.response.ApiSucessResponse;
 import com.deliverytech.delivery_api.dto.response.PedidoResponseDTO;
 import com.deliverytech.delivery_api.enums.StatusPedidos;
 import com.deliverytech.delivery_api.service.PedidoService;
@@ -10,10 +11,11 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import java.math.BigDecimal;
+import java.net.URI;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -34,10 +36,25 @@ public class PedidoController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Pedido criado com sucesso"),
             @ApiResponse(responseCode = "400", description = "Dados de entrada inválidos")
-    })    @PostMapping
-    public ResponseEntity<PedidoResponseDTO> criar(@Valid @RequestBody PedidoRequestDTO dto) {
+    })
+    @PostMapping
+    public ResponseEntity<ApiSucessResponse<PedidoResponseDTO>> criar(@Valid @RequestBody PedidoRequestDTO dto) {
         PedidoResponseDTO novoPedido = pedidoService.criarPedido(dto);
-        return new ResponseEntity<>(novoPedido, HttpStatus.CREATED);
+
+        // Header Location
+        URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
+                .path("/{id}")
+                .buildAndExpand(novoPedido.getId())
+                .toUri();
+
+        ApiSucessResponse<PedidoResponseDTO> response = ApiSucessResponse.<PedidoResponseDTO>builder()
+                .sucesso(true)
+                .mensagem("Pedido criado com sucesso")
+                .dados(novoPedido)
+                .timestamp(LocalDateTime.now())
+                .build();
+
+        return ResponseEntity.created(uri).body(response);
     }
 
     // GET /api/pedidos/{id} - Buscar pedido completo
@@ -47,8 +64,15 @@ public class PedidoController {
             @ApiResponse(responseCode = "404", description = "Pedido não encontrado")
     })
     @GetMapping("/{id}")
-    public ResponseEntity<PedidoResponseDTO> buscarPorId(@PathVariable Long id) {
-        return ResponseEntity.ok(pedidoService.buscarPedidoPorId(id));
+    public ResponseEntity<ApiSucessResponse<PedidoResponseDTO>> buscarPorId(@PathVariable Long id) {
+        PedidoResponseDTO pedido = pedidoService.buscarPedidoPorId(id);
+
+        return ResponseEntity.ok(ApiSucessResponse.<PedidoResponseDTO>builder()
+                .sucesso(true)
+                .mensagem("Pedido localizado")
+                .dados(pedido)
+                .timestamp(LocalDateTime.now())
+                .build());
     }
 
     // GET /api/pedidos - Listar com filtros (status, data)
@@ -58,10 +82,18 @@ public class PedidoController {
             @ApiResponse(responseCode = "404", description = "Pedido não encontrado")
     })
     @GetMapping
-    public ResponseEntity<List<PedidoResponseDTO>> listar(
+    public ResponseEntity<ApiSucessResponse<List<PedidoResponseDTO>>> listar(
             @RequestParam(required = false) StatusPedidos status,
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime data) {
-        return ResponseEntity.ok(pedidoService.listarComFiltros(status, data));
+
+        List<PedidoResponseDTO> lista = pedidoService.listarComFiltros(status, data);
+
+        return ResponseEntity.ok(ApiSucessResponse.<List<PedidoResponseDTO>>builder()
+                .sucesso(true)
+                .mensagem("Consulta de pedidos realizada")
+                .dados(lista)
+                .timestamp(LocalDateTime.now())
+                .build());
     }
 
     // PATCH /api/pedidos/{id}/status - Atualizar status
@@ -71,9 +103,15 @@ public class PedidoController {
             @ApiResponse(responseCode = "404", description = "Pedido não encontrado")
     })
     @PatchMapping("/{id}/status")
-    public ResponseEntity<PedidoResponseDTO> atualizarStatus(@PathVariable Long id,
-                                                             @RequestParam StatusPedidos status) {
-        return ResponseEntity.ok(pedidoService.atualizarStatusPedido(id, status));
+    public ResponseEntity<ApiSucessResponse<PedidoResponseDTO>> atualizarStatus(@PathVariable Long id, @RequestParam StatusPedidos status) {
+        PedidoResponseDTO atualizado = pedidoService.atualizarStatusPedido(id, status);
+
+        return ResponseEntity.ok(ApiSucessResponse.<PedidoResponseDTO>builder()
+                .sucesso(true)
+                .mensagem("Status do pedido atualizado para: " + status)
+                .dados(atualizado)
+                .timestamp(LocalDateTime.now())
+                .build());
     }
 
     // DELETE /api/pedidos/{id} - Cancelar pedido
@@ -95,8 +133,15 @@ public class PedidoController {
             @ApiResponse(responseCode = "404", description = "Histórico de pedido não encontrado")
     })
     @GetMapping("/clientes/{clienteId}/pedidos")
-    public ResponseEntity<List<PedidoResponseDTO>> listarPorCliente(@PathVariable Long clienteId) {
-        return ResponseEntity.ok(pedidoService.buscarPedidosPorCliente(clienteId));
+    public ResponseEntity<ApiSucessResponse<List<PedidoResponseDTO>>> listarPorCliente(@PathVariable Long clienteId) {
+        List<PedidoResponseDTO> lista = pedidoService.buscarPedidosPorCliente(clienteId);
+
+        return ResponseEntity.ok(ApiSucessResponse.<List<PedidoResponseDTO>>builder()
+                .sucesso(true)
+                .mensagem("Histórico do cliente recuperado")
+                .dados(lista)
+                .timestamp(LocalDateTime.now())
+                .build());
     }
 
     // GET /api/restaurantes/{restauranteId}/pedidos - Pedidos do restaurante
@@ -106,8 +151,15 @@ public class PedidoController {
             @ApiResponse(responseCode = "404", description = "Pedido por restaurante não encontrado")
     })
     @GetMapping("/restaurantes/{restauranteId}/pedidos")
-    public ResponseEntity<List<PedidoResponseDTO>> listarPorRestaurante(@PathVariable Long restauranteId) {
-        return ResponseEntity.ok(pedidoService.buscarPedidosPorRestaurante(restauranteId));
+    public ResponseEntity<ApiSucessResponse<List<PedidoResponseDTO>>> listarPorRestaurante(@PathVariable Long restauranteId) {
+        List<PedidoResponseDTO> lista = pedidoService.buscarPedidosPorRestaurante(restauranteId);
+
+        return ResponseEntity.ok(ApiSucessResponse.<List<PedidoResponseDTO>>builder()
+                .sucesso(true)
+                .mensagem("Pedidos do restaurante recuperados")
+                .dados(lista)
+                .timestamp(LocalDateTime.now())
+                .build());
     }
 
     // POST /api/pedidos/calcular - calculo total sem salvar (Simulação)
@@ -117,7 +169,14 @@ public class PedidoController {
             @ApiResponse(responseCode = "404", description = "Taxa de cálculo total por pedido não encontrado")
     })
     @PostMapping("/calcular")
-    public ResponseEntity<BigDecimal> calcularTotalSimulado(@RequestBody PedidoRequestDTO dto) {
-        return ResponseEntity.ok(pedidoService.calcularSimulacao(dto));
+    public ResponseEntity<ApiSucessResponse<BigDecimal>> calcularTotalSimulado(@RequestBody PedidoRequestDTO dto) {
+        BigDecimal total = pedidoService.calcularSimulacao(dto);
+
+        return ResponseEntity.ok(ApiSucessResponse.<BigDecimal>builder()
+                .sucesso(true)
+                .mensagem("Simulação de cálculo concluída")
+                .dados(total)
+                .timestamp(LocalDateTime.now())
+                .build());
     }
 }

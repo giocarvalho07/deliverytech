@@ -1,6 +1,7 @@
 package com.deliverytech.delivery_api.controller;
 
 import com.deliverytech.delivery_api.dto.request.ClienteRequestDTO;
+import com.deliverytech.delivery_api.dto.response.ApiSucessResponse;
 import com.deliverytech.delivery_api.dto.response.ClienteResponseDTO;
 import com.deliverytech.delivery_api.service.ClienteService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -8,9 +9,11 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+import java.net.URI;
+import java.time.LocalDateTime;
 import java.util.List;
 
 
@@ -32,10 +35,25 @@ public class ClienteController {
             @ApiResponse(responseCode = "400", description = "Dados de entrada inválidos")
     })
     @PostMapping
-    public ResponseEntity<ClienteResponseDTO> cadastrar(@Valid @RequestBody ClienteRequestDTO dto) {
-        ClienteResponseDTO novoCliente = clienteService.cadastrarCliente(dto);
+    public ResponseEntity<ApiSucessResponse<ClienteResponseDTO>> cadastrar(@Valid @RequestBody ClienteRequestDTO dto) {
 
-        return new ResponseEntity<>(novoCliente, HttpStatus.CREATED);
+        ClienteResponseDTO novoCliente = clienteService.cadastrarCliente(dto);
+        // Header Location
+        URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
+                .path("/{id}")
+                .buildAndExpand(novoCliente.getId())
+                .toUri();
+
+        // Aqui o Java usará o seu DTO importado corretamente
+        ApiSucessResponse<ClienteResponseDTO> response =
+                ApiSucessResponse.<ClienteResponseDTO>builder()
+                        .sucesso(true)
+                        .mensagem("Cliente cadastrado com sucesso")
+                        .dados(novoCliente)
+                        .timestamp(LocalDateTime.now())
+                        .build();
+
+        return ResponseEntity.created(uri).body(response);
     }
 
     // GET /api/clientes/{id} - Buscar por ID
@@ -45,8 +63,15 @@ public class ClienteController {
             @ApiResponse(responseCode = "404", description = "Cliente não encontrado")
     })
     @GetMapping("/{id}")
-    public ResponseEntity<ClienteResponseDTO> buscarPorId(@PathVariable Long id) {
-        return ResponseEntity.ok(clienteService.buscarClientePorId(id));
+    public ResponseEntity<ApiSucessResponse<ClienteResponseDTO>> buscarPorId(@PathVariable Long id) {
+        ClienteResponseDTO dto = clienteService.buscarClientePorId(id);
+
+        return ResponseEntity.ok(ApiSucessResponse.<ClienteResponseDTO>builder()
+                .sucesso(true)
+                .mensagem("Cliente localizado")
+                .dados(dto)
+                .timestamp(LocalDateTime.now())
+                .build());
     }
 
     // GET /api/clientes - Listar clientes ativos
@@ -56,8 +81,15 @@ public class ClienteController {
             @ApiResponse(responseCode = "404", description = "Cliente não encontrado")
     })
     @GetMapping
-    public ResponseEntity<List<ClienteResponseDTO>> listarAtivos() {
-        return ResponseEntity.ok(clienteService.listarClientesAtivos());
+    public ResponseEntity<ApiSucessResponse<List<ClienteResponseDTO>>> listarAtivos() {
+        List<ClienteResponseDTO> lista = clienteService.listarClientesAtivos();
+
+        return ResponseEntity.ok(ApiSucessResponse.<List<ClienteResponseDTO>>builder()
+                .sucesso(true)
+                .mensagem("Lista de clientes ativos")
+                .dados(lista)
+                .timestamp(LocalDateTime.now())
+                .build());
     }
 
     // PUT /api/clientes/{id} - Atualizar cliente
@@ -67,9 +99,15 @@ public class ClienteController {
             @ApiResponse(responseCode = "404", description = "Cliente não encontrado")
     })
     @PutMapping("/{id}")
-    public ResponseEntity<ClienteResponseDTO> atualizar(@PathVariable Long id,
-                                                        @Valid @RequestBody ClienteRequestDTO dto) {
-        return ResponseEntity.ok(clienteService.atualizarCliente(id, dto));
+    public ResponseEntity<ApiSucessResponse<ClienteResponseDTO>> atualizar(@PathVariable Long id, @Valid @RequestBody ClienteRequestDTO dto) {
+        ClienteResponseDTO atualizado = clienteService.atualizarCliente(id, dto);
+
+        return ResponseEntity.ok(ApiSucessResponse.<ClienteResponseDTO>builder()
+                .sucesso(true)
+                .mensagem("Cliente atualizado")
+                .dados(atualizado)
+                .timestamp(LocalDateTime.now())
+                .build());
     }
 
     // PATCH /api/clientes/{id}/status - Ativar/desativar (Toggle)
@@ -91,7 +129,14 @@ public class ClienteController {
             @ApiResponse(responseCode = "404", description = "Cliente por email não encontrado")
     })
     @GetMapping("/email/{email}")
-    public ResponseEntity<ClienteResponseDTO> buscarPorEmail(@PathVariable String email) {
-        return ResponseEntity.ok(clienteService.buscarClientePorEmail(email));
+    public ResponseEntity<ApiSucessResponse<ClienteResponseDTO>> buscarPorEmail(@PathVariable String email) {
+        ClienteResponseDTO dto = clienteService.buscarClientePorEmail(email);
+
+        return ResponseEntity.ok(ApiSucessResponse.<ClienteResponseDTO>builder()
+                .sucesso(true)
+                .mensagem("Cliente encontrado")
+                .dados(dto)
+                .timestamp(LocalDateTime.now())
+                .build());
     }
 }

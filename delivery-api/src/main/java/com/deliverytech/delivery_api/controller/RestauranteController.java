@@ -1,6 +1,7 @@
 package com.deliverytech.delivery_api.controller;
 
 import com.deliverytech.delivery_api.dto.request.RestauranteRequestDTO;
+import com.deliverytech.delivery_api.dto.response.ApiSucessResponse;
 import com.deliverytech.delivery_api.dto.response.RestauranteResponseDTO;
 import com.deliverytech.delivery_api.service.RestauranteService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -8,10 +9,12 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import java.math.BigDecimal;
+import java.net.URI;
+import java.time.LocalDateTime;
 import java.util.List;
 
 
@@ -33,9 +36,22 @@ public class RestauranteController {
             @ApiResponse(responseCode = "400", description = "Dados de entrada inválidos")
     })
     @PostMapping
-    public ResponseEntity<RestauranteResponseDTO> cadastrar(@Valid @RequestBody RestauranteRequestDTO dto) {
+    public ResponseEntity<ApiSucessResponse<RestauranteResponseDTO>> cadastrar(@Valid @RequestBody RestauranteRequestDTO dto) {
         RestauranteResponseDTO novoRestaurante = restauranteService.cadastrarRestaurante(dto);
-        return new ResponseEntity<>(novoRestaurante, HttpStatus.CREATED);
+        // Header Location
+        URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
+                .path("/{id}")
+                .buildAndExpand(novoRestaurante.getId())
+                .toUri();
+
+        ApiSucessResponse<RestauranteResponseDTO> response = ApiSucessResponse.<RestauranteResponseDTO>builder()
+                .sucesso(true)
+                .mensagem("Restaurante cadastrado com sucesso")
+                .dados(novoRestaurante)
+                .timestamp(LocalDateTime.now())
+                .build();
+
+        return ResponseEntity.created(uri).body(response);
     }
 
     // GET /api/restaurantes - Listar com filtros opcionais (categoria, ativo)
@@ -45,10 +61,18 @@ public class RestauranteController {
             @ApiResponse(responseCode = "404", description = "Restaurante não encontrado")
     })
     @GetMapping
-    public ResponseEntity<List<RestauranteResponseDTO>> listar(
+    public ResponseEntity<ApiSucessResponse<List<RestauranteResponseDTO>>> listar(
             @RequestParam(required = false) String categoria,
             @RequestParam(required = false) Boolean ativo) {
-        return ResponseEntity.ok(restauranteService.listarComFiltros(categoria, ativo));
+
+        List<RestauranteResponseDTO> lista = restauranteService.listarComFiltros(categoria, ativo);
+
+        return ResponseEntity.ok(ApiSucessResponse.<List<RestauranteResponseDTO>>builder()
+                .sucesso(true)
+                .mensagem("Busca realizada com sucesso")
+                .dados(lista)
+                .timestamp(LocalDateTime.now())
+                .build());
     }
 
     // GET /api/restaurantes/{id} - Buscar por ID
@@ -58,8 +82,15 @@ public class RestauranteController {
             @ApiResponse(responseCode = "404", description = "Restaurante não encontrado")
     })
     @GetMapping("/{id}")
-    public ResponseEntity<RestauranteResponseDTO> buscarPorId(@PathVariable Long id) {
-        return ResponseEntity.ok(restauranteService.buscarRestaurantePorId(id));
+    public ResponseEntity<ApiSucessResponse<RestauranteResponseDTO>> buscarPorId(@PathVariable Long id) {
+        RestauranteResponseDTO restaurante = restauranteService.buscarRestaurantePorId(id);
+
+        return ResponseEntity.ok(ApiSucessResponse.<RestauranteResponseDTO>builder()
+                .sucesso(true)
+                .mensagem("Restaurante localizado")
+                .dados(restaurante)
+                .timestamp(LocalDateTime.now())
+                .build());
     }
 
     // PUT /api/restaurantes/{id} - Atualizar restaurante completo
@@ -69,9 +100,15 @@ public class RestauranteController {
             @ApiResponse(responseCode = "404", description = "Restaurante não encontrado")
     })
     @PutMapping("/{id}")
-    public ResponseEntity<RestauranteResponseDTO> atualizar(@PathVariable Long id,
-                                                            @Valid @RequestBody RestauranteRequestDTO dto) {
-        return ResponseEntity.ok(restauranteService.atualizarRestaurante(id, dto));
+    public ResponseEntity<ApiSucessResponse<RestauranteResponseDTO>> atualizar(@PathVariable Long id, @Valid @RequestBody RestauranteRequestDTO dto) {
+        RestauranteResponseDTO atualizado = restauranteService.atualizarRestaurante(id, dto);
+
+        return ResponseEntity.ok(ApiSucessResponse.<RestauranteResponseDTO>builder()
+                .sucesso(true)
+                .mensagem("Restaurante atualizado com sucesso")
+                .dados(atualizado)
+                .timestamp(LocalDateTime.now())
+                .build());
     }
 
     // PATCH /api/restaurantes/{id}/status - Ativar/desativar (Alteração parcial)
@@ -83,6 +120,7 @@ public class RestauranteController {
     @PatchMapping("/{id}/status")
     public ResponseEntity<Void> atualizarStatus(@PathVariable Long id, @RequestParam boolean ativo) {
         restauranteService.atualizarStatus(id, ativo);
+        // Operações de status/toggle usam 204 No Content
         return ResponseEntity.noContent().build();
     }
 
@@ -93,8 +131,15 @@ public class RestauranteController {
             @ApiResponse(responseCode = "404", description = "Restaurante não encontrado")
     })
     @GetMapping("/categoria/{categoria}")
-    public ResponseEntity<List<RestauranteResponseDTO>> buscarPorCategoria(@PathVariable String categoria) {
-        return ResponseEntity.ok(restauranteService.buscarRestaurantesPorCategoria(categoria));
+    public ResponseEntity<ApiSucessResponse<List<RestauranteResponseDTO>>> buscarPorCategoria(@PathVariable String categoria) {
+        List<RestauranteResponseDTO> lista = restauranteService.buscarRestaurantesPorCategoria(categoria);
+
+        return ResponseEntity.ok(ApiSucessResponse.<List<RestauranteResponseDTO>>builder()
+                .sucesso(true)
+                .mensagem("Resultados para a categoria: " + categoria)
+                .dados(lista)
+                .timestamp(LocalDateTime.now())
+                .build());
     }
 
     // GET /api/restaurantes/{id}/taxa-entrega/{cep} - Calcular taxa dinâmica
@@ -104,9 +149,15 @@ public class RestauranteController {
             @ApiResponse(responseCode = "404", description = "Restaurante não encontrado")
     })
     @GetMapping("/{id}/taxa-entrega/{cep}")
-    public ResponseEntity<BigDecimal> calcularTaxa(@PathVariable Long id, @PathVariable String cep) {
+    public ResponseEntity<ApiSucessResponse<BigDecimal>> calcularTaxa(@PathVariable Long id, @PathVariable String cep) {
         BigDecimal taxa = restauranteService.calcularTaxaEntrega(id, cep);
-        return ResponseEntity.ok(taxa);
+
+        return ResponseEntity.ok(ApiSucessResponse.<BigDecimal>builder()
+                .sucesso(true)
+                .mensagem("Taxa calculada")
+                .dados(taxa)
+                .timestamp(LocalDateTime.now())
+                .build());
     }
 
     // GET /api/restaurantes/proximos/{cep} - Buscar por proximidade de CEP
@@ -116,7 +167,14 @@ public class RestauranteController {
             @ApiResponse(responseCode = "404", description = "Restaurante/CEP não encontrado")
     })
     @GetMapping("/proximos/{cep}")
-    public ResponseEntity<List<RestauranteResponseDTO>> buscarProximos(@PathVariable String cep) {
-        return ResponseEntity.ok(restauranteService.buscarRestaurantesProximos(cep));
+    public ResponseEntity<ApiSucessResponse<List<RestauranteResponseDTO>>> buscarProximos(@PathVariable String cep) {
+        List<RestauranteResponseDTO> lista = restauranteService.buscarRestaurantesProximos(cep);
+
+        return ResponseEntity.ok(ApiSucessResponse.<List<RestauranteResponseDTO>>builder()
+                .sucesso(true)
+                .mensagem("Restaurantes próximos ao CEP: " + cep)
+                .dados(lista)
+                .timestamp(LocalDateTime.now())
+                .build());
     }
 }

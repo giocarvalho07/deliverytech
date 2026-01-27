@@ -1,6 +1,7 @@
 package com.deliverytech.delivery_api.controller;
 
 import com.deliverytech.delivery_api.dto.TotalVendasPorRestauranteDTO;
+import com.deliverytech.delivery_api.dto.response.ApiSucessResponse;
 import com.deliverytech.delivery_api.dto.response.PedidoResponseDTO;
 import com.deliverytech.delivery_api.service.RelatorioService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -35,8 +36,15 @@ public class RelatorioController {
             @ApiResponse(responseCode = "404", description = "Relatório de vendas por restaurante não encontrado")
     })
     @GetMapping("/vendas-por-restaurante")
-    public ResponseEntity<List<TotalVendasPorRestauranteDTO>> getVendasPorRestaurante() {
-        return ResponseEntity.ok(relatorioService.totalVendasPorRestaurante());
+    public ResponseEntity<ApiSucessResponse<List<TotalVendasPorRestauranteDTO>>> getVendasPorRestaurante() {
+        List<TotalVendasPorRestauranteDTO> dados = relatorioService.totalVendasPorRestaurante();
+
+        return ResponseEntity.ok(ApiSucessResponse.<List<TotalVendasPorRestauranteDTO>>builder()
+                .sucesso(true)
+                .mensagem("Relatório de vendas gerado com sucesso")
+                .dados(dados)
+                .timestamp(LocalDateTime.now())
+                .build());
     }
 
     // GET /api/relatorios/produtos-mais-vendidos
@@ -46,8 +54,15 @@ public class RelatorioController {
             @ApiResponse(responseCode = "404", description = "Relatório de produtos mais vendidos não encontrado")
     })
     @GetMapping("/produtos-mais-vendidos")
-    public ResponseEntity<List<?>> getProdutosMaisVendidos() {
-        return ResponseEntity.ok(relatorioService.produtosMaisVendidos());
+    public ResponseEntity<ApiSucessResponse<List<?>>> getProdutosMaisVendidos() {
+        List<?> dados = relatorioService.produtosMaisVendidos();
+
+        return ResponseEntity.ok(ApiSucessResponse.<List<?>>builder()
+                .sucesso(true)
+                .mensagem("Ranking de produtos mais vendidos")
+                .dados(dados)
+                .timestamp(LocalDateTime.now())
+                .build());
     }
 
     // GET /api/relatorios/clientes-ativos
@@ -57,8 +72,15 @@ public class RelatorioController {
             @ApiResponse(responseCode = "404", description = "Relatório de clientes ativos não encontrado")
     })
     @GetMapping("/clientes-ativos")
-    public ResponseEntity<List<?>> getClientesAtivos() {
-        return ResponseEntity.ok(relatorioService.clientesMaisAtivos());
+    public ResponseEntity<ApiSucessResponse<List<?>>> getClientesAtivos() {
+        List<?> dados = relatorioService.clientesMaisAtivos();
+
+        return ResponseEntity.ok(ApiSucessResponse.<List<?>>builder()
+                .sucesso(true)
+                .mensagem("Relatório de clientes mais ativos recuperado")
+                .dados(dados)
+                .timestamp(LocalDateTime.now())
+                .build());
     }
 
     // GET /api/relatorios/pedidos-por-periodo
@@ -68,9 +90,17 @@ public class RelatorioController {
             @ApiResponse(responseCode = "404", description = "Relatório de pedidos por período não encontrado")
     })
     @GetMapping("/pedidos-por-periodo")
-    public ResponseEntity<List<PedidoResponseDTO>> getPedidosPorPeriodo(
+    public ResponseEntity<ApiSucessResponse<List<PedidoResponseDTO>>> getPedidosPorPeriodo(
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime inicio,
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime fim) {
-        return ResponseEntity.ok(relatorioService.pedidosPorPeriodo(inicio, fim));
+
+        List<PedidoResponseDTO> dados = relatorioService.pedidosPorPeriodo(inicio, fim);
+
+        return ResponseEntity.ok(ApiSucessResponse.<List<PedidoResponseDTO>>builder()
+                .sucesso(true)
+                .mensagem(String.format("Pedidos encontrados entre %s e %s", inicio, fim))
+                .dados(dados)
+                .timestamp(LocalDateTime.now())
+                .build());
     }
 }
