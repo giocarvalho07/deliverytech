@@ -1,139 +1,196 @@
 {
   "info": {
-    "_postman_id": "33728e89-d49d-4c89-ab08-ab5a78277e28",
+    "_postman_id": "180707eb-3439-4464-bc05-c77ae07e5600",
     "name": "Delivery Tech API",
     "description": "Collection para teste das funcionalidades da API de Delivery",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
     "_exporter_id": "49545615",
-    "_collection_link": "https://go.postman.co/collection/49545615-33728e89-d49d-4c89-ab08-ab5a78277e28?source=collection_link"
+    "_collection_link": "https://go.postman.co/collection/49545615-180707eb-3439-4464-bc05-c77ae07e5600?source=collection_link"
   },
   "item": [
     {
       "name": "Clientes",
       "item": [
         {
-          "name": "Cadastrar Cliente",
+          "name": "POST Cadastrar Cliente",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code deve ser 201\", function () { pm.response.to.have.status(201); });",
+                  "pm.test(\"Validar se retorno tem corpo de sucesso\", function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.sucesso).to.be.true;",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
           "request": {
             "method": "POST",
             "header": [],
             "body": {
               "mode": "raw",
-              "raw": "{\n    \"nome\": \"João Silva\",\n    \"email\": \"joao@email.com\",\n    \"telefone\": \"11999999999\",\n    \"endereco\": \"Rua das Flores, 123\"\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
+              "raw": "{\n    \"nome\": \"Jose Santos\",\n    \"email\": \"jose.santos@email.com\",\n    \"telefone\": \"11977777777\",\n    \"endereco\": \"Rua das cloud, 20\"\n}",
+              "options": { "raw": { "language": "json" } }
             },
             "url": {
               "raw": "{{baseUrl}}/api/clientes",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "clientes"
-              ]
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "clientes"]
             }
           }
         },
         {
-          "name": "Listar Clientes Ativos",
+          "name": "GET Listar Clientes Ativos",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code deve ser 200\", function () { pm.response.to.have.status(200); });",
+                  "pm.test(\"Validar estrutura de paginação\", function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.dados).to.have.property('content');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
           "request": {
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/api/clientes",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "clientes"
+              "raw": "{{baseUrl}}/api/clientes?page=0&size=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "clientes"],
+              "query": [
+                { "key": "page", "value": "0" },
+                { "key": "size", "value": "10" }
               ]
             }
           }
         },
         {
-          "name": "Buscar por ID",
+          "name": "GET Buscar por ID",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code deve ser 200\", function () { pm.response.to.have.status(200); });"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
           "request": {
             "method": "GET",
             "header": [],
             "url": {
               "raw": "{{baseUrl}}/api/clientes/1",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "clientes",
-                "1"
-              ]
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "clientes", "1"]
             }
           }
         },
         {
-          "name": "Buscar por Email",
+          "name": "GET Buscar por Email",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code deve ser 200\", function () { pm.response.to.have.status(200); });"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
           "request": {
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/api/clientes/email/joao@email.com",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "clientes",
-                "email",
-                "joao@email.com"
-              ]
+              "raw": "{{baseUrl}}/api/clientes/email/jose.santos@email.com",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "clientes", "email", "jose.santos@email.com"]
             }
           }
         },
         {
-          "name": "Atualizar Cliente",
+          "name": "PUT Atualizar Cliente",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code deve ser 200\", function () { pm.response.to.have.status(200); });"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
           "request": {
             "method": "PUT",
             "header": [],
             "body": {
               "mode": "raw",
-              "raw": "{\n    \"nome\": \"João Silva Atualizado\",\n    \"email\": \"joao.novo@email.com\",\n    \"telefone\": \"11988888888\",\n    \"endereco\": \"Nova Avenida, 456\"\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
+              "raw": "{\n    \"nome\": \"Jose Silva Atualizado\",\n    \"email\": \"jose.novo@email.com\",\n    \"telefone\": \"11988888888\",\n    \"endereco\": \"Nova Avenida, 456\"\n}",
+              "options": { "raw": { "language": "json" } }
             },
             "url": {
               "raw": "{{baseUrl}}/api/clientes/1",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "clientes",
-                "1"
-              ]
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "clientes", "1"]
             }
           }
         },
         {
-          "name": "Alternar Status (Ativar/Inativar)",
+          "name": "PATCH Alternar Status (Ativar/Inativar)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code deve ser 204\", function () { pm.response.to.have.status(204); });"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
           "request": {
             "method": "PATCH",
             "header": [],
             "url": {
               "raw": "{{baseUrl}}/api/clientes/1/status",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "clientes",
-                "1",
-                "status"
-              ]
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "clientes", "1", "status"]
+            }
+          }
+        },
+        {
+          "name": "Cenário de Erro - Cliente Inexistente",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Deve retornar 404 para ID inválido\", function () { pm.response.to.have.status(404); });"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/clientes/999",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "clientes", "999"]
             }
           }
         }
@@ -143,16 +200,30 @@
       "name": "Restaurantes",
       "item": [
         {
-          "name": "Cadastrar Restaurante",
+          "name": "POST Cadastrar Restaurante",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code deve ser 201\", function () { pm.response.to.have.status(201); });",
+                  "pm.test(\"Validar mensagem de sucesso\", function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.sucesso).to.be.true;",
+                  "    pm.expect(jsonData.mensagem).to.equal(\"Restaurante cadastrado com sucesso\");",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
           "request": {
             "method": "POST",
             "header": [],
             "body": {
               "mode": "raw",
-              "raw": "{\n    \"nome\": \"Pizzaria Bella Napoli\",\n    \"endereco\": \"Rua Roma, 50, CEP 05001-000\",\n    \"taxaEntrega\": 7.50,\n    \"ativo\": true\n}",
-              "options": {
-                "raw": { "language": "json" }
-              }
+              "raw": "{\n    \"nome\": \"Pizzaria Bella Napoli\",\n    \"endereco\": \"Rua Roma, 50\",\n    \"categoria\": \"Italiana\",\n    \"taxaEntregaBase\": 7.50\n}",
+              "options": { "raw": { "language": "json" } }
             },
             "url": {
               "raw": "{{baseUrl}}/api/restaurantes",
@@ -162,23 +233,50 @@
           }
         },
         {
-          "name": "Listar com Filtros",
+          "name": "GET Listar Restaurantes",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code deve ser 200\", function () { pm.response.to.have.status(200); });",
+                  "pm.test(\"Validar se dados é paginado\", function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.dados).to.have.property('content');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
           "request": {
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/api/restaurantes?categoria=Pizza&ativo=true",
+              "raw": "{{baseUrl}}/api/restaurantes?page=0&size=10&ativo=true",
               "host": ["{{baseUrl}}"],
               "path": ["api", "restaurantes"],
               "query": [
-                { "key": "categoria", "value": "Pizza" },
+                { "key": "page", "value": "0" },
+                { "key": "size", "value": "10" },
                 { "key": "ativo", "value": "true" }
               ]
             }
           }
         },
         {
-          "name": "Buscar por ID",
+          "name": "GET Buscar por ID",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code deve ser 200\", function () { pm.response.to.have.status(200); });"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
           "request": {
             "method": "GET",
             "header": [],
@@ -190,41 +288,18 @@
           }
         },
         {
-          "name": "Atualizar Restaurante (PUT)",
-          "request": {
-            "method": "PUT",
-            "header": [],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n    \"nome\": \"Bella Napoli Alterada\",\n    \"endereco\": \"Rua Nova, 100\",\n    \"taxaEntrega\": 8.00,\n    \"ativo\": true\n}",
-              "options": {
-                "raw": { "language": "json" }
+          "name": "GET Buscar por Categoria",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code deve ser 200\", function () { pm.response.to.have.status(200); });"
+                ],
+                "type": "text/javascript"
               }
-            },
-            "url": {
-              "raw": "{{baseUrl}}/api/restaurantes/1",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "restaurantes", "1"]
             }
-          }
-        },
-        {
-          "name": "Ativar/Desativar (PATCH)",
-          "request": {
-            "method": "PATCH",
-            "header": [],
-            "url": {
-              "raw": "{{baseUrl}}/api/restaurantes/1/status?ativo=false",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "restaurantes", "1", "status"],
-              "query": [
-                { "key": "ativo", "value": "false" }
-              ]
-            }
-          }
-        },
-        {
-          "name": "Buscar por Categoria",
+          ],
           "request": {
             "method": "GET",
             "header": [],
@@ -236,7 +311,22 @@
           }
         },
         {
-          "name": "Calcular Taxa Entrega",
+          "name": "GET Calcular Taxa Entrega",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code deve ser 200\", function () { pm.response.to.have.status(200); });",
+                  "pm.test(\"Validar se retornou valor numérico\", function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.dados).to.be.a('number');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
           "request": {
             "method": "GET",
             "header": [],
@@ -248,14 +338,100 @@
           }
         },
         {
-          "name": "Restaurantes Próximos",
+          "name": "GET Buscar Próximos por CEP",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code deve ser 200\", function () { pm.response.to.have.status(200); });"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
           "request": {
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/api/restaurantes/proximos/05001000",
+              "raw": "{{baseUrl}}/api/restaurantes/proximos/01310100",
               "host": ["{{baseUrl}}"],
-              "path": ["api", "restaurantes", "proximos", "05001000"]
+              "path": ["api", "restaurantes", "proximos", "01310100"]
+            }
+          }
+        },
+        {
+          "name": "PUT Atualizar Restaurante",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code deve ser 200\", function () { pm.response.to.have.status(200); });"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"nome\": \"Pizzaria Bella Napoli Atualizada\",\n    \"endereco\": \"Rua Roma, 55\",\n    \"categoria\": \"Italiana Gourmet\",\n    \"taxaEntregaBase\": 9.00\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/restaurantes/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "restaurantes", "1"]
+            }
+          }
+        },
+        {
+          "name": "PATCH Inativar Restaurante",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code deve ser 204\", function () { pm.response.to.have.status(204); });"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/restaurantes/1/status?ativo=false",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "restaurantes", "1", "status"],
+              "query": [{ "key": "ativo", "value": "false" }]
+            }
+          }
+        },
+        {
+          "name": "Cenário de Erro - Restaurante Inexistente",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Deve retornar 404 para ID inexistente\", function () { pm.response.to.have.status(404); });"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/restaurantes/999",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "restaurantes", "999"]
             }
           }
         }
@@ -265,29 +441,127 @@
       "name": "Produtos",
       "item": [
         {
-          "name": "Cadastrar Produto",
+          "name": "POST Cadastrar Produto",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code deve ser 201\", function () { pm.response.to.have.status(201); });",
+                  "pm.test(\"Validar se a resposta contém a mensagem de sucesso\", function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.sucesso).to.be.true;",
+                  "    pm.expect(jsonData.mensagem).to.equal(\"Produto cadastrado com sucesso\");",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
           "request": {
             "method": "POST",
             "header": [],
             "body": {
               "mode": "raw",
-              "raw": "{\n    \"nome\": \"Pizza Margherita\",\n    \"descricao\": \"Molho, mussarela e manjericão\",\n    \"preco\": 45.90,\n    \"categoria\": \"Pizzas\",\n    \"disponivel\": true,\n    \"restauranteId\": 1\n}",
+              "raw": "{\n    \"nome\": \"Pizza Margherita\",\n    \"descricao\": \"Molho de tomate, muçarela e manjericão\",\n    \"categoria\": \"Pizza\",\n    \"preco\": 45.90,\n    \"restauranteId\": 1\n}",
               "options": { "raw": { "language": "json" } }
             },
-            "url": { "raw": "{{baseUrl}}/api/produtos", "host": ["{{baseUrl}}"], "path": ["api", "produtos"] }
+            "url": {
+              "raw": "{{baseUrl}}/api/produtos",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "produtos"]
+            }
           }
         },
         {
-          "name": "Produtos do Restaurante",
+          "name": "GET Buscar por ID",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code deve ser 200\", function () { pm.response.to.have.status(200); });"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
           "request": {
             "method": "GET",
-            "url": { "raw": "{{baseUrl}}/api/restaurantes/1/produtos", "host": ["{{baseUrl}}"], "path": ["api", "restaurantes", "1", "produtos"] }
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/produtos/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "produtos", "1"]
+            }
           }
         },
         {
-          "name": "Busca por Nome",
+          "name": "GET Listar por Restaurante",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code deve ser 200\", function () { pm.response.to.have.status(200); });",
+                  "pm.test(\"Validar se retornou uma lista\", function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.dados).to.be.an('array');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
           "request": {
             "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/produtos/restaurantes/1/produtos",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "produtos", "restaurantes", "1", "produtos"]
+            }
+          }
+        },
+        {
+          "name": "GET Buscar por Categoria",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code deve ser 200\", function () { pm.response.to.have.status(200); });"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/produtos/categoria/Pizza",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "produtos", "categoria", "Pizza"]
+            }
+          }
+        },
+        {
+          "name": "GET Buscar por Nome",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code deve ser 200\", function () { pm.response.to.have.status(200); });"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
             "url": {
               "raw": "{{baseUrl}}/api/produtos/buscar?nome=Pizza",
               "host": ["{{baseUrl}}"],
@@ -297,10 +571,101 @@
           }
         },
         {
-          "name": "Remover Produto",
+          "name": "PUT Atualizar Produto",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code deve ser 200\", function () { pm.response.to.have.status(200); });"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"nome\": \"Pizza Margherita Especial\",\n    \"descricao\": \"Molho, muçarela, manjericão e borda recheada\",\n    \"categoria\": \"Pizza\",\n    \"preco\": 55.00,\n    \"restauranteId\": 1\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/produtos/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "produtos", "1"]
+            }
+          }
+        },
+        {
+          "name": "PATCH Alterar Disponibilidade",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code deve ser 204\", function () { pm.response.to.have.status(204); });"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/produtos/1/disponibilidade?disponivel=false",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "produtos", "1", "disponibilidade"],
+              "query": [{ "key": "disponivel", "value": "false" }]
+            }
+          }
+        },
+        {
+          "name": "DELETE Remover Produto",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code deve ser 204\", function () { pm.response.to.have.status(204); });"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
           "request": {
             "method": "DELETE",
-            "url": { "raw": "{{baseUrl}}/api/produtos/1", "host": ["{{baseUrl}}"], "path": ["api", "produtos", "1"] }
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/produtos/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "produtos", "1"]
+            }
+          }
+        },
+        {
+          "name": "Cenário de Erro - Produto Inexistente",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Deve retornar 404 para ID inexistente\", function () { pm.response.to.have.status(404); });"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/produtos/999",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "produtos", "999"]
+            }
           }
         }
       ]
@@ -309,85 +674,324 @@
       "name": "Pedidos",
       "item": [
         {
-          "name": "Criar Pedido",
+          "name": "POST Criar Pedido",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code deve ser 201\", function () { pm.response.to.have.status(201); });",
+                  "pm.test(\"Validar se retorno tem corpo de sucesso\", function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.sucesso).to.be.true;",
+                  "    pm.expect(jsonData.dados).to.have.property('id');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
           "request": {
             "method": "POST",
             "header": [],
             "body": {
               "mode": "raw",
-              "raw": "{\n    \"clienteId\": 1,\n    \"restauranteId\": 1,\n    \"itens\": [\n        {\n            \"produtoId\": 1,\n            \"quantidade\": 2\n        },\n        {\n            \"produtoId\": 2,\n            \"quantidade\": 1\n        }\n    ]\n}",
+              "raw": "{\n    \"clienteId\": 1,\n    \"restauranteId\": 1,\n    \"enderecoEntrega\": \"Rua das Flores, 123\",\n    \"itens\": [\n        {\n            \"produtoId\": 1,\n            \"quantidade\": 2\n        }\n    ]\n}",
               "options": { "raw": { "language": "json" } }
             },
-            "url": { "raw": "{{baseUrl}}/api/pedidos", "host": ["{{baseUrl}}"], "path": ["api", "pedidos"] }
-          }
-        },
-        {
-          "name": "Calcular Simulação (Sem Salvar)",
-          "request": {
-            "method": "POST",
-            "header": [],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n    \"clienteId\": 1,\n    \"restauranteId\": 1,\n    \"itens\": [\n        {\n            \"produtoId\": 1,\n            \"quantidade\": 2\n        }\n    ]\n}",
-              "options": { "raw": { "language": "json" } }
-            },
-            "url": { "raw": "{{baseUrl}}/api/pedidos/calcular", "host": ["{{baseUrl}}"], "path": ["api", "pedidos", "calcular"] }
-          }
-        },
-        {
-          "name": "Buscar Pedido por ID",
-          "request": {
-            "method": "GET",
-            "url": { "raw": "{{baseUrl}}/api/pedidos/1", "host": ["{{baseUrl}}"], "path": ["api", "pedidos", "1"] }
-          }
-        },
-        {
-          "name": "Listar com Filtros (Status e Data)",
-          "request": {
-            "method": "GET",
             "url": {
-              "raw": "{{baseUrl}}/api/pedidos?status=PENDENTE&data=2026-01-25T10:00:00",
+              "raw": "{{baseUrl}}/api/pedidos",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "pedidos"]
+            }
+          }
+        },
+        {
+          "name": "GET Buscar Pedido por ID",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code deve ser 200\", function () { pm.response.to.have.status(200); });"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/pedidos/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "pedidos", "1"]
+            }
+          }
+        },
+        {
+          "name": "GET Listar Pedidos (Filtros)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code deve ser 200\", function () { pm.response.to.have.status(200); });"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/pedidos?status=PENDING&page=0&size=10",
               "host": ["{{baseUrl}}"],
               "path": ["api", "pedidos"],
               "query": [
-                { "key": "status", "value": "PENDENTE" },
-                { "key": "data", "value": "2026-01-25T10:00:00" }
+                { "key": "status", "value": "PENDING" },
+                { "key": "page", "value": "0" },
+                { "key": "size", "value": "10" }
               ]
             }
           }
         },
         {
-          "name": "Atualizar Status do Pedido",
+          "name": "PATCH Atualizar Status",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code deve ser 200\", function () { pm.response.to.have.status(200); });"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
           "request": {
             "method": "PATCH",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/api/pedidos/1/status?status=CONFIRMADO",
+              "raw": "{{baseUrl}}/api/pedidos/1/status?status=CONFIRMED",
               "host": ["{{baseUrl}}"],
               "path": ["api", "pedidos", "1", "status"],
-              "query": [{ "key": "status", "value": "CONFIRMADO" }]
+              "query": [{ "key": "status", "value": "CONFIRMED" }]
             }
           }
         },
         {
-          "name": "Cancelar Pedido",
+          "name": "GET Histórico do Cliente",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code deve ser 200\", function () { pm.response.to.have.status(200); });"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/pedidos/clientes/1/pedidos",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "pedidos", "clientes", "1", "pedidos"]
+            }
+          }
+        },
+        {
+          "name": "GET Pedidos do Restaurante",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code deve ser 200\", function () { pm.response.to.have.status(200); });"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/pedidos/restaurantes/1/pedidos",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "pedidos", "restaurantes", "1", "pedidos"]
+            }
+          }
+        },
+        {
+          "name": "POST Simular Cálculo",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code deve ser 200\", function () { pm.response.to.have.status(200); });",
+                  "pm.test(\"Validar se retornou valor total\", function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.dados).to.be.a('number');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"clienteId\": 1,\n    \"restauranteId\": 1,\n    \"itens\": [\n        {\n            \"produtoId\": 1,\n            \"quantidade\": 3\n        }\n    ]\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/pedidos/calcular",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "pedidos", "calcular"]
+            }
+          }
+        },
+        {
+          "name": "DELETE Cancelar Pedido",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code deve ser 204\", function () { pm.response.to.have.status(204); });"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
           "request": {
             "method": "DELETE",
-            "url": { "raw": "{{baseUrl}}/api/pedidos/1", "host": ["{{baseUrl}}"], "path": ["api", "pedidos", "1"] }
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/pedidos/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "pedidos", "1"]
+            }
           }
         },
         {
-          "name": "Histórico do Cliente",
+          "name": "Cenário de Erro - Pedido Inexistente",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Deve retornar 404 para ID inválido\", function () { pm.response.to.have.status(404); });"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
           "request": {
             "method": "GET",
-            "url": { "raw": "{{baseUrl}}/api/clientes/1/pedidos", "host": ["{{baseUrl}}"], "path": ["api", "clientes", "1", "pedidos"] }
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/pedidos/999",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "pedidos", "999"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Itens de Pedido",
+      "item": [
+        {
+          "name": "GET Listar Todos os Itens",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code deve ser 200\", function () { pm.response.to.have.status(200); });",
+                  "pm.test(\"Validar se retorno é uma lista\", function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.dados).to.be.an('array');",
+                  "});",
+                  "pm.test(\"Validar mensagem de sucesso\", function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.mensagem).to.equal(\"Lista global de itens recuperada\");",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/item-pedidos",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "item-pedidos"]
+            }
           }
         },
         {
-          "name": "Pedidos do Restaurante",
+          "name": "GET Listar Itens por Pedido",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code deve ser 200\", function () { pm.response.to.have.status(200); });",
+                  "pm.test(\"Validar estrutura da resposta\", function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.sucesso).to.be.true;",
+                  "    pm.expect(jsonData.dados).to.be.an('array');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
           "request": {
             "method": "GET",
-            "url": { "raw": "{{baseUrl}}/api/restaurantes/1/pedidos", "host": ["{{baseUrl}}"], "path": ["api", "restaurantes", "1", "pedidos"] }
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/item-pedidos/pedido/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "item-pedidos", "pedido", "1"]
+            }
+          }
+        },
+        {
+          "name": "Cenário de Erro - Pedido Inexistente",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Deve retornar 404 para ID de pedido inválido\", function () {",
+                  "    pm.response.to.have.status(404);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/item-pedidos/pedido/999",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "item-pedidos", "pedido", "999"]
+            }
           }
         }
       ]
@@ -396,7 +1000,22 @@
       "name": "Relatórios",
       "item": [
         {
-          "name": "Vendas por Restaurante",
+          "name": "GET Vendas por Restaurante",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code deve ser 200\", function () { pm.response.to.have.status(200); });",
+                  "pm.test(\"Validar se retorna lista de vendas\", function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.dados).to.be.an('array');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
           "request": {
             "method": "GET",
             "header": [],
@@ -408,7 +1027,22 @@
           }
         },
         {
-          "name": "Produtos Mais Vendidos",
+          "name": "GET Produtos Mais Vendidos",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code deve ser 200\", function () { pm.response.to.have.status(200); });",
+                  "pm.test(\"Validar mensagem do ranking\", function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.mensagem).to.equal(\"Ranking de produtos mais vendidos\");",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
           "request": {
             "method": "GET",
             "header": [],
@@ -420,7 +1054,18 @@
           }
         },
         {
-          "name": "Clientes Mais Ativos",
+          "name": "GET Clientes Mais Ativos",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code deve ser 200\", function () { pm.response.to.have.status(200); });"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
           "request": {
             "method": "GET",
             "header": [],
@@ -432,25 +1077,61 @@
           }
         },
         {
-          "name": "Pedidos por Período",
+          "name": "GET Pedidos por Período",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code deve ser 200\", function () { pm.response.to.have.status(200); });",
+                  "pm.test(\"Validar se retorno é lista de pedidos\", function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.dados).to.be.an('array');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
           "request": {
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/api/relatorios/pedidos-por-periodo?inicio=2026-01-01T00:00:00&fim=2026-01-31T23:59:59",
+              "raw": "{{baseUrl}}/api/relatorios/pedidos-por-periodo?inicio=2024-01-01T00:00:00&fim=2024-12-31T23:59:59",
               "host": ["{{baseUrl}}"],
               "path": ["api", "relatorios", "pedidos-por-periodo"],
               "query": [
-                {
-                  "key": "inicio",
-                  "value": "2026-01-01T00:00:00",
-                  "description": "Data inicial no formato YYYY-MM-DDTHH:mm:ss"
-                },
-                {
-                  "key": "fim",
-                  "value": "2026-01-31T23:59:59",
-                  "description": "Data final no formato YYYY-MM-DDTHH:mm:ss"
-                }
+                { "key": "inicio", "value": "2024-01-01T00:00:00" },
+                { "key": "fim", "value": "2024-12-31T23:59:59" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Cenário de Erro - Datas Inválidas",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Deve retornar 400 para formato de data inválido\", function () {",
+                  "    pm.response.to.have.status(400);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/relatorios/pedidos-por-periodo?inicio=data-errada&fim=2024",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "relatorios", "pedidos-por-periodo"],
+              "query": [
+                { "key": "inicio", "value": "data-errada" },
+                { "key": "fim", "value": "2024" }
               ]
             }
           }
