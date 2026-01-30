@@ -3,12 +3,14 @@ package com.deliverytech.delivery_api.controller;
 import com.deliverytech.delivery_api.dto.request.ClienteRequestDTO;
 import com.deliverytech.delivery_api.dto.response.ApiSucessResponse;
 import com.deliverytech.delivery_api.dto.response.ClienteResponseDTO;
+import com.deliverytech.delivery_api.dto.response.PagedResponse;
 import com.deliverytech.delivery_api.service.ClienteService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -75,19 +77,21 @@ public class ClienteController {
     }
 
     // GET /api/clientes - Listar clientes ativos
-    @Operation(summary = "Listar clientes", description = "Lista um novo cliente ativo no sistema.")
+    @Operation(summary = "Listar clientes com paginação", description = "Lista um novo cliente ativo no sistema com paginação.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Cliente encontrado com sucesso"),
             @ApiResponse(responseCode = "404", description = "Cliente não encontrado")
     })
     @GetMapping
-    public ResponseEntity<ApiSucessResponse<List<ClienteResponseDTO>>> listarAtivos() {
-        List<ClienteResponseDTO> lista = clienteService.listarClientesAtivos();
+    public ResponseEntity<ApiSucessResponse<PagedResponse<ClienteResponseDTO>>> listarAtivos(
+            @org.springdoc.core.annotations.ParameterObject Pageable pageable) {
 
-        return ResponseEntity.ok(ApiSucessResponse.<List<ClienteResponseDTO>>builder()
+        PagedResponse<ClienteResponseDTO> pagedData = clienteService.listarClientesAtivosPaginado(pageable);
+
+        return ResponseEntity.ok(ApiSucessResponse.<PagedResponse<ClienteResponseDTO>>builder()
                 .sucesso(true)
-                .mensagem("Lista de clientes ativos")
-                .dados(lista)
+                .mensagem("Página de clientes recuperada")
+                .dados(pagedData)
                 .timestamp(LocalDateTime.now())
                 .build());
     }

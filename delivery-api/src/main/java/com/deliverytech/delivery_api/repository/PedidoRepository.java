@@ -3,6 +3,8 @@ package com.deliverytech.delivery_api.repository;
 import com.deliverytech.delivery_api.dto.TotalVendasPorRestauranteDTO;
 import com.deliverytech.delivery_api.enums.StatusPedidos;
 import com.deliverytech.delivery_api.model.Pedido;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -44,6 +46,11 @@ public interface PedidoRepository extends JpaRepository<Pedido, Long> {
             @Param("inicio") LocalDateTime inicio,
             @Param("fim") LocalDateTime fim
     );
+
+    @Query("SELECT p FROM Pedido p WHERE " +
+            "(:status IS NULL OR p.status = :status) AND " +
+            "(:data IS NULL OR CAST(p.dataPedido AS date) = CAST(:data AS date))")
+    Page<Pedido> findWithFilters(StatusPedidos status, LocalDateTime data, Pageable pageable);
 
     // Exemplo de como devem ser as assinaturas no PedidoRepository
     @Query("SELECT new com.deliverytech.delivery_api.dto.TotalVendasPorRestauranteDTO(p.restaurante.nome, SUM(p.valorTotal)) " +

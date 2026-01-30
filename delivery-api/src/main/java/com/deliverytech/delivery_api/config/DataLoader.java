@@ -10,6 +10,7 @@ import com.deliverytech.delivery_api.service.PedidoService;
 import com.deliverytech.delivery_api.service.ProdutoService;
 import com.deliverytech.delivery_api.service.RestauranteService;
 import org.slf4j.Logger;
+import org.springframework.data.domain.PageRequest;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Configuration;
@@ -44,7 +45,7 @@ public class DataLoader implements CommandLineRunner {
         try {
             // VERIFICAÇÃO DE SEGURANÇA: Evita o erro de ObjectOptimisticLockingFailureException
             // Se já existirem clientes, assumimos que a carga já foi feita nesta sessão do banco.
-            if (!clienteService.listarClientesAtivos().isEmpty()) {
+            if (clienteService.listarClientesAtivosPaginado(PageRequest.of(0, 1)).getConteudo().isEmpty()) {
                 logger.info("--- DADOS JÁ PRESENTES NO BANCO. PULANDO CARGA INICIAL PARA EVITAR CONFLITOS ---");
                 return;
             }

@@ -1,12 +1,15 @@
 package com.deliverytech.delivery_api.service;
 
 import com.deliverytech.delivery_api.dto.request.RestauranteRequestDTO;
+import com.deliverytech.delivery_api.dto.response.PagedResponse;
 import com.deliverytech.delivery_api.dto.response.RestauranteResponseDTO;
 import com.deliverytech.delivery_api.exepction.BusinessException;
 import com.deliverytech.delivery_api.exepction.EntityNotFoundException;
 import com.deliverytech.delivery_api.model.Restaurante;
 import com.deliverytech.delivery_api.repository.RestauranteRepository;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
@@ -120,11 +123,14 @@ public class RestauranteService {
     }
 
     // Método de listagem com filtros individuais
-    public List<RestauranteResponseDTO> listarComFiltros(String categoria, Boolean ativo) {
-        return restauranteRepository.findAll().stream()
-                .filter(r -> (categoria == null || r.getCategoria().equalsIgnoreCase(categoria)))
-                .filter(r -> (ativo == null || r.getAtivo().equals(ativo)))
-                .map(r -> modelMapper.map(r, RestauranteResponseDTO.class))
-                .collect(Collectors.toList());
+    public PagedResponse<RestauranteResponseDTO> listarComFiltrosPaginado(String categoria, Boolean ativo, Pageable pageable) {
+        // Busca paginada no banco
+        Page<Restaurante> paginaEntidades = restauranteRepository.listarComFiltros(categoria, ativo, pageable);
+
+        // Converte para DTO
+        Page<RestauranteResponseDTO> paginaDtos = paginaEntidades
+                .map(r -> modelMapper.map(r, RestauranteResponseDTO.class));
+
+        return new PagedResponse<>(paginaDtos);
     }
 }

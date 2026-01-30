@@ -2,6 +2,7 @@ package com.deliverytech.delivery_api.controller;
 
 import com.deliverytech.delivery_api.dto.request.RestauranteRequestDTO;
 import com.deliverytech.delivery_api.dto.response.ApiSucessResponse;
+import com.deliverytech.delivery_api.dto.response.PagedResponse;
 import com.deliverytech.delivery_api.dto.response.RestauranteResponseDTO;
 import com.deliverytech.delivery_api.service.RestauranteService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -61,16 +62,17 @@ public class RestauranteController {
             @ApiResponse(responseCode = "404", description = "Restaurante não encontrado")
     })
     @GetMapping
-    public ResponseEntity<ApiSucessResponse<List<RestauranteResponseDTO>>> listar(
+    public ResponseEntity<ApiSucessResponse<PagedResponse<RestauranteResponseDTO>>> listar(
             @RequestParam(required = false) String categoria,
-            @RequestParam(required = false) Boolean ativo) {
+            @RequestParam(required = false) Boolean ativo,
+            @org.springframework.data.web.PageableDefault(size = 10) org.springframework.data.domain.Pageable pageable) {
 
-        List<RestauranteResponseDTO> lista = restauranteService.listarComFiltros(categoria, ativo);
+        PagedResponse<RestauranteResponseDTO> pagedData = restauranteService.listarComFiltrosPaginado(categoria, ativo, pageable);
 
-        return ResponseEntity.ok(ApiSucessResponse.<List<RestauranteResponseDTO>>builder()
+        return ResponseEntity.ok(ApiSucessResponse.<PagedResponse<RestauranteResponseDTO>>builder()
                 .sucesso(true)
                 .mensagem("Busca realizada com sucesso")
-                .dados(lista)
+                .dados(pagedData)
                 .timestamp(LocalDateTime.now())
                 .build());
     }

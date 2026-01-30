@@ -2,6 +2,7 @@ package com.deliverytech.delivery_api.controller;
 
 import com.deliverytech.delivery_api.dto.request.PedidoRequestDTO;
 import com.deliverytech.delivery_api.dto.response.ApiSucessResponse;
+import com.deliverytech.delivery_api.dto.response.PagedResponse;
 import com.deliverytech.delivery_api.dto.response.PedidoResponseDTO;
 import com.deliverytech.delivery_api.enums.StatusPedidos;
 import com.deliverytech.delivery_api.service.PedidoService;
@@ -10,6 +11,10 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Page;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -82,16 +87,16 @@ public class PedidoController {
             @ApiResponse(responseCode = "404", description = "Pedido não encontrado")
     })
     @GetMapping
-    public ResponseEntity<ApiSucessResponse<List<PedidoResponseDTO>>> listar(
+    public ResponseEntity<ApiSucessResponse<PagedResponse<PedidoResponseDTO>>> listar(
             @RequestParam(required = false) StatusPedidos status,
-            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime data) {
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime data, // <-- E esta também
+            @PageableDefault(size = 10) Pageable pageable) {
 
-        List<PedidoResponseDTO> lista = pedidoService.listarComFiltros(status, data);
-
-        return ResponseEntity.ok(ApiSucessResponse.<List<PedidoResponseDTO>>builder()
+        PagedResponse<PedidoResponseDTO> pagedData = pedidoService.listarComFiltrosPaginado(status, data, pageable);
+        return ResponseEntity.ok(ApiSucessResponse.<PagedResponse<PedidoResponseDTO>>builder()
                 .sucesso(true)
                 .mensagem("Consulta de pedidos realizada")
-                .dados(lista)
+                .dados(pagedData)
                 .timestamp(LocalDateTime.now())
                 .build());
     }

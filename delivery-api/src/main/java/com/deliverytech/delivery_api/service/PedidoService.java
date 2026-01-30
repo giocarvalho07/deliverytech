@@ -1,6 +1,7 @@
 package com.deliverytech.delivery_api.service;
 
 import com.deliverytech.delivery_api.dto.request.PedidoRequestDTO;
+import com.deliverytech.delivery_api.dto.response.PagedResponse;
 import com.deliverytech.delivery_api.dto.response.PedidoResponseDTO;
 import com.deliverytech.delivery_api.enums.StatusPedidos;
 import com.deliverytech.delivery_api.exepction.BusinessException;
@@ -11,6 +12,8 @@ import com.deliverytech.delivery_api.repository.PedidoRepository;
 import com.deliverytech.delivery_api.repository.ProdutoRepository;
 import com.deliverytech.delivery_api.repository.RestauranteRepository;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.TransactionException;
 import org.springframework.transaction.annotation.Transactional;
@@ -129,13 +132,16 @@ public class PedidoService {
         return modelMapper.map(pedido, PedidoResponseDTO.class);
     }
 
-    // NOVO: GET /api/pedidos (Listagem com filtros)
-    public List<PedidoResponseDTO> listarComFiltros(StatusPedidos status, LocalDateTime data) {
-        return pedidoRepository.findAll().stream()
-                .filter(p -> (status == null || p.getStatus().equals(status)))
-                .filter(p -> (data == null || p.getDataPedido().toLocalDate().equals(data.toLocalDate())))
-                .map(p -> modelMapper.map(p, PedidoResponseDTO.class))
-                .collect(Collectors.toList());
+    // NOVO: GET /api/pedidos (Listagem com filtros e paginação)
+    public PagedResponse<PedidoResponseDTO> listarComFiltrosPaginado(StatusPedidos status, LocalDateTime data, Pageable pageable) {
+
+        // Busca do banco já trazendo apenas os registros da página (ex: 10 itens)
+        Page<Pedido> paginaEntidades = pedidoRepository.findWithFilters(status, data, pageable);
+        // Converte a página de entidades para DTOs
+        Page<PedidoResponseDTO> paginaDtos = paginaEntidades
+                .map(p -> modelMapper.map(p, PedidoResponseDTO.class));
+        // Envelopa no seu DTO de paginação
+        return new PagedResponse<>(paginaDtos);
     }
 
     public List<PedidoResponseDTO> buscarPedidosPorCliente(Long clienteId) {

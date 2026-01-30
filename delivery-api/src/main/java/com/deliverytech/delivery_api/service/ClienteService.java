@@ -2,11 +2,14 @@ package com.deliverytech.delivery_api.service;
 
 import com.deliverytech.delivery_api.dto.request.ClienteRequestDTO;
 import com.deliverytech.delivery_api.dto.response.ClienteResponseDTO;
+import com.deliverytech.delivery_api.dto.response.PagedResponse;
 import com.deliverytech.delivery_api.exepction.BusinessException;
 import com.deliverytech.delivery_api.exepction.EntityNotFoundException;
 import com.deliverytech.delivery_api.model.Cliente;
 import com.deliverytech.delivery_api.repository.ClienteRepository;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
@@ -54,10 +57,15 @@ public class ClienteService {
     }
 
     // listarClientesAtivos - Apenas clientes ativos
-    public List<ClienteResponseDTO> listarClientesAtivos() {
-        return clienteRepository.findByAtivoTrue().stream()
-                .map(cliente -> modelMapper.map(cliente, ClienteResponseDTO.class))
-                .collect(Collectors.toList());
+    public PagedResponse<ClienteResponseDTO> listarClientesAtivosPaginado(Pageable pageable) {
+        // Busca a página de entidades do banco
+        Page<Cliente> paginaEntidade = clienteRepository.findByAtivoTrue(pageable);
+
+        // Converte a página de Entidade para DTO mantendo a estrutura de página
+        Page<ClienteResponseDTO> paginaDto = paginaEntidade
+                .map(cliente -> modelMapper.map(cliente, ClienteResponseDTO.class));
+        // Envelopa no seu novo PagedResponse
+        return new PagedResponse<>(paginaDto);
     }
 
     // atualizarCliente - Valida existência e e-mail único
