@@ -11,6 +11,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import java.math.BigDecimal;
@@ -37,6 +38,7 @@ public class RestauranteController {
             @ApiResponse(responseCode = "400", description = "Dados de entrada inválidos")
     })
     @PostMapping
+    @PreAuthorize("hasRole('ADMIN') or (hasRole('RESTAURANTE') and @restauranteService.isOwner(#id))")
     public ResponseEntity<ApiSucessResponse<RestauranteResponseDTO>> cadastrar(@Valid @RequestBody RestauranteRequestDTO dto) {
         RestauranteResponseDTO novoRestaurante = restauranteService.cadastrarRestaurante(dto);
         // Header Location
@@ -102,6 +104,7 @@ public class RestauranteController {
             @ApiResponse(responseCode = "404", description = "Restaurante não encontrado")
     })
     @PutMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN') or (hasRole('RESTAURANTE') and @restauranteService.isOwner(#id))")
     public ResponseEntity<ApiSucessResponse<RestauranteResponseDTO>> atualizar(@PathVariable Long id, @Valid @RequestBody RestauranteRequestDTO dto) {
         RestauranteResponseDTO atualizado = restauranteService.atualizarRestaurante(id, dto);
 
@@ -120,6 +123,7 @@ public class RestauranteController {
             @ApiResponse(responseCode = "404", description = "Restaurante não encontrado")
     })
     @PatchMapping("/{id}/status")
+    @PreAuthorize("hasRole('ADMIN') or (hasRole('RESTAURANTE') and @restauranteService.isOwner(#id))")
     public ResponseEntity<Void> atualizarStatus(@PathVariable Long id, @RequestParam boolean ativo) {
         restauranteService.atualizarStatus(id, ativo);
         // Operações de status/toggle usam 204 No Content

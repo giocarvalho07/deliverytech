@@ -15,6 +15,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import java.math.BigDecimal;
@@ -154,6 +155,7 @@ public class PedidoController {
             @ApiResponse(responseCode = "404", description = "Pedido por restaurante não encontrado")
     })
     @GetMapping("/restaurantes/{restauranteId}/pedidos")
+    @PreAuthorize("hasRole('RESTAURANTE')")
     public ResponseEntity<ApiSucessResponse<List<PedidoResponseDTO>>> listarPorRestaurante(@PathVariable Long restauranteId) {
         List<PedidoResponseDTO> lista = pedidoService.buscarPedidosPorRestaurante(restauranteId);
 

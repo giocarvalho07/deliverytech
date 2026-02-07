@@ -6,8 +6,11 @@ import com.deliverytech.delivery_api.dto.response.RestauranteResponseDTO;
 import com.deliverytech.delivery_api.exepction.BusinessException;
 import com.deliverytech.delivery_api.exepction.EntityNotFoundException;
 import com.deliverytech.delivery_api.model.Restaurante;
+import com.deliverytech.delivery_api.model.Usuario;
 import com.deliverytech.delivery_api.repository.RestauranteRepository;
+import com.deliverytech.delivery_api.util.SecurityUtils;
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -22,6 +25,9 @@ public class RestauranteService {
 
     private final RestauranteRepository restauranteRepository;
     private final ModelMapper modelMapper;
+
+    @Autowired
+    private SecurityUtils securityUtils;
 
     public RestauranteService(RestauranteRepository restauranteRepository, ModelMapper modelMapper) {
         this.restauranteRepository = restauranteRepository;
@@ -132,5 +138,12 @@ public class RestauranteService {
                 .map(r -> modelMapper.map(r, RestauranteResponseDTO.class));
 
         return new PagedResponse<>(paginaDtos);
+    }
+
+    // Método para verificação de ROLE Restaurante
+    public boolean isOwner(Long restauranteId) {
+        Usuario user = securityUtils.getCurrentUser();
+        // Verifica se o restauranteId vinculado ao usuário é o mesmo do recurso
+        return user != null && restauranteId.equals(user.getRestauranteId());
     }
 }

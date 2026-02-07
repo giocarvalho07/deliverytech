@@ -6,9 +6,12 @@ import com.deliverytech.delivery_api.exepction.BusinessException;
 import com.deliverytech.delivery_api.exepction.EntityNotFoundException;
 import com.deliverytech.delivery_api.model.Produto;
 import com.deliverytech.delivery_api.model.Restaurante;
+import com.deliverytech.delivery_api.model.Usuario;
 import com.deliverytech.delivery_api.repository.ProdutoRepository;
 import com.deliverytech.delivery_api.repository.RestauranteRepository;
+import com.deliverytech.delivery_api.util.SecurityUtils;
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
@@ -21,6 +24,9 @@ public class ProdutoService {
     private final ProdutoRepository produtoRepository;
     private final RestauranteRepository restauranteRepository;
     private final ModelMapper modelMapper;
+
+    @Autowired
+    private SecurityUtils securityUtils;
 
     public ProdutoService(ProdutoRepository produtoRepository,
                           RestauranteRepository restauranteRepository,
@@ -117,5 +123,13 @@ public class ProdutoService {
         return produtoRepository.findByNomeContainingIgnoreCase(nome).stream()
                 .map(p -> modelMapper.map(p, ProdutoResponseDTO.class))
                 .collect(Collectors.toList());
+    }
+
+
+    public boolean isOwner(Long produtoId) {
+        Usuario user = securityUtils.getCurrentUser();
+        Produto produto = produtoRepository.findById(produtoId).orElse(null);
+        // Verifica se o produto pertence ao restaurante do usuário logado
+        return user != null && produto != null && produto.getRestaurante().getId().equals(user.getRestauranteId());
     }
 }
