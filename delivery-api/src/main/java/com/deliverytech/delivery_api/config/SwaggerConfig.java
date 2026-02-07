@@ -1,9 +1,13 @@
 package com.deliverytech.delivery_api.config;
 
+import io.swagger.v3.oas.models.Components;
+import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Contact;
 import io.swagger.v3.oas.models.info.Info;
-import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.License;
+import io.swagger.v3.oas.models.security.SecurityRequirement;
+import io.swagger.v3.oas.models.security.SecurityScheme;
+import org.springdoc.core.models.GroupedOpenApi;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -11,25 +15,41 @@ import org.springframework.context.annotation.Configuration;
 public class SwaggerConfig {
 
     @Bean
-    public OpenAPI deliveryApiOpenAPI() {
+    public OpenAPI customOpenAPI() {
         return new OpenAPI()
                 .info(new Info()
                         .title("Delivery Tech API")
-                        .description("API do ecossistema Delivery Tech para gestão de restaurantes, produtos e pedidos.")
-                        .version("v1.0.0")
+                        .version("1.0")
+                        .description("Documentação da API de Delivery com Spring Security e JWT")
                         .contact(new Contact()
                                 .name("Suporte Delivery Tech")
-                                .email("suporte@deliverytech"))
+                                .email("suporte@deliverytech.com"))
                         .license(new License()
                                 .name("Apache 2.0")
-                                .url("http://springdoc.org")));
+                                .url("http://springdoc.org")))
+                .addSecurityItem(new SecurityRequirement().addList("bearerAuth"))
+                .components(new Components()
+                        .addSecuritySchemes("bearerAuth", new SecurityScheme()
+                                .name("bearerAuth")
+                                .type(SecurityScheme.Type.HTTP) // Classe do pacote .models
+                                .scheme("bearer")
+                                .bearerFormat("JWT")));
+    }
+
+    // Grupo Autenticação e Registro (Login, Cadastro e Perfil)
+    @Bean
+    public GroupedOpenApi authApi() {
+        return GroupedOpenApi.builder()
+                .group("1. Autenticação e Registro")
+                .pathsToMatch("/api/auth/**")
+                .build();
     }
 
     // Grupo apenas para Endpoints de Gestão (Restaurantes e Produtos)
     @Bean
     public org.springdoc.core.models.GroupedOpenApi gestaoApi() {
         return org.springdoc.core.models.GroupedOpenApi.builder()
-                .group("1. Gestão e Cardápio")
+                .group("2. Gestão e Cardápio")
                 .pathsToMatch("/api/restaurantes/**", "/api/produtos/**")
                 .build();
     }
@@ -38,7 +58,7 @@ public class SwaggerConfig {
     @Bean
     public org.springdoc.core.models.GroupedOpenApi operacaoApi() {
         return org.springdoc.core.models.GroupedOpenApi.builder()
-                .group("2. Operacional (Pedidos)")
+                .group("3. Operacional (Pedidos)")
                 .pathsToMatch("/api/pedidos/**", "/api/clientes/**")
                 .build();
     }
@@ -47,9 +67,8 @@ public class SwaggerConfig {
     @Bean
     public org.springdoc.core.models.GroupedOpenApi relatorioApi() {
         return org.springdoc.core.models.GroupedOpenApi.builder()
-                .group("3. Inteligência e Relatórios")
+                .group("4. Inteligência e Relatórios")
                 .pathsToMatch("/api/relatorios/**")
                 .build();
     }
-
 }

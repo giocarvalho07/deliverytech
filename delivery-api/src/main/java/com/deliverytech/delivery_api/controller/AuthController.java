@@ -10,6 +10,8 @@ import com.deliverytech.delivery_api.model.Usuario;
 import com.deliverytech.delivery_api.repository.UsuarioRepository;
 import com.deliverytech.delivery_api.service.TokenService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
@@ -42,9 +44,10 @@ public class AuthController {
     private PasswordEncoder passwordEncoder;
 
 
-    @Operation(summary = "Login clientes", description = "Logar um cliente no sistema.")
+    @Operation(summary = "Realiza o login e retorna o Token JWT", description = "Use o token retornado no botão 'Authorize' no topo da página.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Cliente logado com sucesso"),
+            @ApiResponse(responseCode = "200", description = "Login realizado com sucesso",
+                    content = @Content(schema = @Schema(implementation = ApiSucessResponse.class))),
             @ApiResponse(responseCode = "404", description = "Cliente não logado")
     })
     @PostMapping("/login")

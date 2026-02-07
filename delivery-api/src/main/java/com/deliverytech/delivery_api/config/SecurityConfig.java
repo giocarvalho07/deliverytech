@@ -36,6 +36,7 @@ public class SecurityConfig {
                         // Endpoints Públicos
                         .requestMatchers(HttpMethod.POST, "/api/auth/login", "/api/auth/register").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/restaurantes/**", "/api/produtos/**").permitAll()
+                        .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
                         .requestMatchers("/actuator/health").permitAll()
 
                         // Endpoints Protegidos
