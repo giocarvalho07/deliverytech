@@ -9,6 +9,8 @@ import com.deliverytech.delivery_api.model.Cliente;
 import com.deliverytech.delivery_api.repository.ClienteRepository;
 import jakarta.validation.Valid;
 import org.modelmapper.ModelMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -21,6 +23,9 @@ public class ClienteService {
 
     private final ClienteRepository clienteRepository;
     private final ModelMapper modelMapper;
+
+    private static final Logger logger = LoggerFactory.getLogger(ClienteService.class);
+
 
     public ClienteService(ClienteRepository clienteRepository, ModelMapper modelMapper) {
         this.clienteRepository = clienteRepository;
@@ -70,6 +75,7 @@ public class ClienteService {
     // atualizarCliente - Valida existência e e-mail único
     @Transactional
     public ClienteResponseDTO atualizarCliente(Long id, ClienteRequestDTO dto) {
+        logger.info("[AUDITORIA][LGPD] Usuário ID: {} atualizou o cadastro.", id);
         Cliente clienteExistente = clienteRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Não é possível atualizar: Cliente ID " + id + " não existe."));
 

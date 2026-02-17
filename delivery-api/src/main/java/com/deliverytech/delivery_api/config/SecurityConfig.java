@@ -25,24 +25,31 @@ public class SecurityConfig {
     @Autowired
     private SecurityFilter securityFilter;
 
-    
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
-                .csrf(csrf -> csrf.disable()) // Desabilita para APIs REST (Stateless)
-                .cors(Customizer.withDefaults()) // Ativa o CORS com as configurações padrão
-                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // Não cria sessão no servidor
-                .authorizeHttpRequests(authorize -> authorize
-                        // Endpoints Públicos
-                        .requestMatchers(HttpMethod.POST, "/api/auth/login", "/api/auth/register").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/restaurantes/**", "/api/produtos/**").permitAll()
-                        .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
-                        .requestMatchers("/actuator/health").permitAll()
+                .csrf(csrf -> csrf.disable()) // Desabilitado para APIs Stateless
+                .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .authorizeHttpRequests(req -> {
+                    //Endpoints Públicos (Login, Docs, Health Check básico)
+                    req.requestMatchers("/login").permitAll();
+                    req.requestMatchers("/v3/api-docs/**", "/swagger-ui/**").permitAll();
+                    req.requestMatchers(HttpMethod.POST, "/api/auth/login", "/api/auth/register").permitAll();
+                    req.requestMatchers(HttpMethod.GET, "/api/restaurantes/**", "/api/produtos/**").permitAll();
+                    req.requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll();
+                    req.requestMatchers("/actuator/health").permitAll();
+                    req.requestMatchers("/actuator/prometheus/**").permitAll();
 
-                        // Endpoints Protegidos
-                        .anyRequest().authenticated()
-                )
-                // Aqui futuramente entra o filtro do JWT
+                    //Health Check: Geralmente aberto para ferramentas de monitoramento/Cloud
+                    req.requestMatchers("/actuator/health/**").permitAll();
+
+                    // Endpoints Sensíveis do Actuator: Restritos a ADMIN
+                    // Isso cobre /actuator/metrics, /actuator/env, /actuator/info, etc.
+                    req.requestMatchers("/actuator/**").hasRole("ADMIN");
+
+                    req.anyRequest().authenticated();
+                })
+                // Adiciona o seu filtro JWT antes do filtro padrão do Spring
                 .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }

@@ -11,6 +11,8 @@ import com.deliverytech.delivery_api.repository.ProdutoRepository;
 import com.deliverytech.delivery_api.repository.RestauranteRepository;
 import com.deliverytech.delivery_api.util.SecurityUtils;
 import org.modelmapper.ModelMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,6 +26,9 @@ public class ProdutoService {
     private final ProdutoRepository produtoRepository;
     private final RestauranteRepository restauranteRepository;
     private final ModelMapper modelMapper;
+
+    private static final Logger logger = LoggerFactory.getLogger(ProdutoService.class);
+
 
     @Autowired
     private SecurityUtils securityUtils;
@@ -76,6 +81,7 @@ public class ProdutoService {
     // atualizarProduto
     @Transactional
     public ProdutoResponseDTO atualizarProduto(Long id, ProdutoRequestDTO dto) {
+        logger.info("[AUDITORIA][PRODUTO] Aplicando cupom '{}' no pedido ID: {}", id);
         Produto produtoExistente = produtoRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Falha na atualização: Produto não localizado."));
 
@@ -114,6 +120,8 @@ public class ProdutoService {
         if (!produtoRepository.existsById(id)) {
             throw new EntityNotFoundException("Não é possível remover: Produto ID " + id + " não encontrado.");
         }
+        logger.warn("[ALERTA-THRESHOLD]Remover produto do estoque - PRODUTO ID {} demorou {}ms - Verifique gargalos no DB!", id);
+
         produtoRepository.deleteById(id);
     }
 

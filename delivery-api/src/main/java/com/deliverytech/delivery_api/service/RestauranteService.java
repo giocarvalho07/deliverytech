@@ -10,6 +10,8 @@ import com.deliverytech.delivery_api.model.Usuario;
 import com.deliverytech.delivery_api.repository.RestauranteRepository;
 import com.deliverytech.delivery_api.util.SecurityUtils;
 import org.modelmapper.ModelMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -25,6 +27,9 @@ public class RestauranteService {
 
     private final RestauranteRepository restauranteRepository;
     private final ModelMapper modelMapper;
+
+    private static final Logger logger = LoggerFactory.getLogger(RestauranteService.class);
+
 
     @Autowired
     private SecurityUtils securityUtils;
@@ -80,6 +85,8 @@ public class RestauranteService {
         }
 
         modelMapper.map(dto, restauranteExistente);
+        logger.warn("[ALERTA-THRESHOLD] Atualização do cadastro do restaurante - RESTAURANTE ID {} demorou {}ms - Verifique gargalos no DB!", id);
+
         return modelMapper.map(restauranteRepository.save(restauranteExistente), RestauranteResponseDTO.class);
     }
 
@@ -122,6 +129,7 @@ public class RestauranteService {
     // Método para atualização parcial de status (PATCH)
     @Transactional
     public void atualizarStatus(Long id, boolean ativo) {
+        logger.info("[AUDITORIA][ESTOQUE] Ajuste de inventário - Produto ID: {} | De: {} unidades | Para: {} unidades", id, ativo);
         Restaurante restaurante = restauranteRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Restaurante não encontrado com o ID: " + id));
         restaurante.setAtivo(ativo);

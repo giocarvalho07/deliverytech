@@ -12,6 +12,8 @@ import com.deliverytech.delivery_api.repository.PedidoRepository;
 import com.deliverytech.delivery_api.repository.ProdutoRepository;
 import com.deliverytech.delivery_api.repository.RestauranteRepository;
 import org.modelmapper.ModelMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
@@ -32,6 +34,8 @@ public class PedidoService {
     private final RestauranteRepository restauranteRepository;
     private final ProdutoRepository produtoRepository;
     private final ModelMapper modelMapper;
+
+    private static final Logger logger = LoggerFactory.getLogger(PedidoService.class);
 
     public PedidoService(PedidoRepository pedidoRepository, ClienteRepository clienteRepository,
                          RestauranteRepository restauranteRepository, ProdutoRepository produtoRepository,
@@ -101,6 +105,8 @@ public class PedidoService {
             item.setPrecoUnitario(produto.getPreco());
             item.setSubtotal(produto.getPreco().multiply(BigDecimal.valueOf(itemDto.getQuantidade())));
 
+            logger.warn("[ALERTA-THRESHOLD] Processamento de pedido - Pedido ID {} demorou {}ms - Verifique gargalos no DB!", pedido.getId(), pedido, restaurante);
+
             pedido.getItens().add(item);
         });
     }
@@ -165,6 +171,7 @@ public class PedidoService {
 
     @Transactional
     public PedidoResponseDTO atualizarStatusPedido(Long id, StatusPedidos novoStatus) {
+        logger.info("[AUDITORIA] Alterando status do pedido ID: {} para {}", id, novoStatus);
         Pedido pedido = pedidoRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Pedido não localizado para atualização."));
 
@@ -172,12 +179,15 @@ public class PedidoService {
             throw new BusinessException("Não é possível alterar o status de um pedido já finalizado.");
         }
 
+
         pedido.setStatus(novoStatus);
+        logger.debug("[AUDITORIA] Status do pedido {} atualizado com sucesso no banco.", id);
         return modelMapper.map(pedidoRepository.save(pedido), PedidoResponseDTO.class);
     }
 
     @Transactional
     public void cancelarPedido(Long id) {
+        logger.warn("[AUDITORIA][SEGURANÇA] Tentativa de cancelamento - Pedido ID: {} | Motivo: {} | Usuário: {}", id);
         Pedido pedido = pedidoRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Pedido não localizado para cancelamento."));
 
@@ -187,5 +197,6 @@ public class PedidoService {
 
         pedido.setStatus(StatusPedidos.CANCELADO);
         pedidoRepository.save(pedido);
+        logger.info("[AUDITORIA] Pedido ID: {} cancelado com sucesso.", id);
     }
 }

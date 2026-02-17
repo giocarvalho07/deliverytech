@@ -1,6 +1,10 @@
 package com.deliverytech.delivery_api.exeption;
 
 import com.deliverytech.delivery_api.dto.response.ApiErrorResponse;
+import com.deliverytech.delivery_api.health.DeliveryMetrics;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -10,9 +14,14 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
-
 @RestControllerAdvice
 public class GlobalExceptionHandler {
+
+    @Autowired
+    private DeliveryMetrics deliveryMetrics;
+
+    private static final Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);
+
 
     // Trata EntityNotFoundException -> Retorna 404
     @ExceptionHandler(EntityNotFoundException.class)
@@ -51,4 +60,17 @@ public class GlobalExceptionHandler {
                 .build();
         return ResponseEntity.badRequest().body(error);
     }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<Object> handleGeneralError(Exception ex) {
+        // Agora sim: usamos a instância injetada para contar o erro
+        deliveryMetrics.registrarPedido(false);
+
+        logger.error("Erro crítico processando requisição: {}", ex.getMessage(), ex);
+
+        return ResponseEntity
+                .internalServerError()
+                .body("Erro interno no servidor de Delivery.");
+    }
+
 }
