@@ -108,5 +108,64 @@ Interface Visual (Swagger UI): http://localhost:8080/swagger-ui/index.html
 * (Este link retorna um JSON puro com toda a especificação da sua API, usado por ferramentas de automação).
 
 
+## Guia de Testes e Qualidade
+
+### Tecnologias de Teste Utilizadas
+JUnit 5: Framework base para execução de testes unitários e de integração.
+
+Mockito: Utilizado para criar dublês de teste (Mocks) em camadas de Service.
+
+MockMvc: Utilizado para simular requisições HTTP em testes de integração de Controllers.
+
+JaCoCo: Ferramenta de análise de cobertura de código.
+
+### Cobertura de Código (JaCoCo)
+Configuramos o projeto para manter um alto padrão de qualidade. O build do Maven está condicionado às seguintes métricas:
+
+Meta de Cobertura: Mínimo de 80% de linhas cobertas.
+
+Exclusões: Classes de configuração (config), DTOs, entidades (model) e exceções personalizadas são excluídas da métrica para focar na lógica de negócio (Services e Controllers).
+
+Comandos Maven
+Utilize os comandos abaixo no terminal para gerenciar o ciclo de testes e relatórios.
+
+1. Execução Completa (Verificação de Qualidade)
+Executa todos os testes, gera o relatório visual e valida a regra de 80% de cobertura. Este comando falha o build se a meta não for atingida.
+
+Bash
+mvn clean test jacoco:report jacoco:check
+2. Apenas Testes de Integração
+Para rodar especificamente os testes que utilizam o contexto do Spring e MockMvc:
+
+Bash
+mvn test -Dtest=*IT
+3. Gerar Relatório Visual
+Caso queira apenas atualizar o relatório HTML sem realizar o check de cobertura:
+
+Bash
+mvn jacoco:report
+O relatório será gerado em: target/site/jacoco/index.html
+
+4. Ignorar Verificação de Cobertura
+Para realizar o build ignorando temporariamente a trava de 80% (uso restrito):
+
+Bash
+mvn install -Djacoco.skip=true
+
+### Como analisar o Relatório
+Ao abrir o index.html gerado pelo JaCoCo, observe as cores:
+
+🟢 Verde: Código totalmente coberto por testes.
+
+🟡 Amarelo: Branches (desvios como if/else) parcialmente cobertos.
+
+🔴 Vermelho: Código não exercitado pelos testes.
+
+### Autenticação nos Testes
+Como a API é protegida por Spring Security, os testes de integração de Controller utilizam a anotação @WithMockUser para simular credenciais válidas e evitar erros 403 Forbidden.
+
+Dica de Desenvolvimento: Antes de realizar um push, sempre execute o "Combo de Qualidade" para garantir que sua alteração não reduziu a cobertura global do projeto para menos de 80%.
+
+
 󰞵 Desenvolvedor
 [Giovanni de Carvalho] - [TURMA 2602] Desenvolvido com JDK 21 e Spring Boot 3.2.x
