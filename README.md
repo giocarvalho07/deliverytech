@@ -132,15 +132,21 @@ Utilize os comandos abaixo no terminal para gerenciar o ciclo de testes e relat�
 1. Execução Completa (Verificação de Qualidade)
 Executa todos os testes, gera o relatório visual e valida a regra de 80% de cobertura. Este comando falha o build se a meta não for atingida.
 
+---
+
 Bash
 mvn clean test jacoco:report jacoco:check
 2. Apenas Testes de Integração
 Para rodar especificamente os testes que utilizam o contexto do Spring e MockMvc:
 
+---
+
 Bash
 mvn test -Dtest=*IT
 3. Gerar Relatório Visual
 Caso queira apenas atualizar o relatório HTML sem realizar o check de cobertura:
+
+---
 
 Bash
 mvn jacoco:report
@@ -148,6 +154,8 @@ O relatório será gerado em: target/site/jacoco/index.html
 
 4. Ignorar Verificação de Cobertura
 Para realizar o build ignorando temporariamente a trava de 80% (uso restrito):
+
+---
 
 Bash
 mvn install -Djacoco.skip=true
