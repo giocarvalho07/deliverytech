@@ -1,4 +1,4 @@
-package com.deliverytech.delivery_api.exepction;
+package com.deliverytech.delivery_api.exeption;
 
 
 public class EntityNotFoundException extends RuntimeException {

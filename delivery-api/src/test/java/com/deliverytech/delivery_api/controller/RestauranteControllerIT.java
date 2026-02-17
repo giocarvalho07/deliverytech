@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
@@ -39,6 +40,7 @@ public class RestauranteControllerIT {
     }
 
     @Test
+    @WithMockUser(username = "admin", roles = {"CLIENTE", "ADMIN"})
     @DisplayName("Deve filtrar restaurantes por categoria e status ativo")
     void deveFiltrarRestaurantes() throws Exception {
         String categoriaFiltro = "Pizza";
@@ -54,6 +56,7 @@ public class RestauranteControllerIT {
     }
 
     @Test
+    @WithMockUser(username = "admin", roles = {"CLIENTE", "ADMIN"})
     @DisplayName("Deve listar restaurantes com paginação padrão")
     void deveListarRestaurantesPaginados() throws Exception {
         mockMvc.perform(get("/api/restaurantes")
@@ -63,6 +66,7 @@ public class RestauranteControllerIT {
     }
 
     @Test
+    @WithMockUser(username = "admin", roles = {"CLIENTE", "ADMIN"})
     @DisplayName("Deve retornar página vazia para filtros inexistentes")
     void deveRetornarVazioParaFiltroInexistente() throws Exception {
         mockMvc.perform(get("/api/restaurantes")

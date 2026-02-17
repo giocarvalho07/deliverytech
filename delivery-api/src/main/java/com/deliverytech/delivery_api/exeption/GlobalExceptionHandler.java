@@ -1,4 +1,4 @@
-package com.deliverytech.delivery_api.exepction;
+package com.deliverytech.delivery_api.exeption;
 
 import com.deliverytech.delivery_api.dto.response.ApiErrorResponse;
 import org.springframework.http.HttpStatus;

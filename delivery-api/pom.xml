@@ -51,6 +51,11 @@
 			<artifactId>spring-boot-starter-security</artifactId>
 		</dependency>
 		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
 			<groupId>com.auth0</groupId>
 			<artifactId>java-jwt</artifactId>
 			<version>4.4.0</version>
@@ -83,6 +88,60 @@
 
 	<build>
 		<plugins>
+			<plugin>
+				<groupId>org.jacoco</groupId>
+				<artifactId>jacoco-maven-plugin</artifactId>
+				<version>0.8.12</version> <executions>
+				<execution>
+					<id>prepare-agent</id>
+					<goals>
+						<goal>prepare-agent</goal>
+					</goals>
+				</execution>
+
+				<execution>
+					<id>report</id>
+					<phase>test</phase>
+					<goals>
+						<goal>report</goal>
+					</goals>
+					<configuration>
+						<excludes>
+							<exclude>com/deliverytech/delivery_api/config/**</exclude>
+							<exclude>com/deliverytech/delivery_api/dto/**</exclude>
+							<exclude>com/deliverytech/delivery_api/model/**</exclude>
+							<exclude>com/deliverytech/delivery_api/exeption/**</exclude>
+							<exclude>com/deliverytech/delivery_api/DeliveryApiApplication.class</exclude>
+						</excludes>
+					</configuration>
+				</execution>
+
+				<execution>
+					<id>check</id>
+					<goals>
+						<goal>check</goal>
+					</goals>
+					<configuration>
+						<rules>
+							<rule>
+								<element>BUNDLE</element>
+								<limits>
+									<limit>
+										<counter>LINE</counter>
+										<value>COVEREDRATIO</value>
+										<minimum>0.80</minimum> </limit>
+								</limits>
+							</rule>
+						</rules>
+						<excludes>
+							<exclude>com/deliverytech/delivery_api/config/**</exclude>
+							<exclude>com/deliverytech/delivery_api/dto/**</exclude>
+							<exclude>com/deliverytech/delivery_api/exeption/**</exclude>
+						</excludes>
+					</configuration>
+				</execution>
+			</executions>
+			</plugin>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>

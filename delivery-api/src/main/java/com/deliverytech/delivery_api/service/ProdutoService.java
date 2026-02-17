@@ -2,8 +2,8 @@ package com.deliverytech.delivery_api.service;
 
 import com.deliverytech.delivery_api.dto.request.ProdutoRequestDTO;
 import com.deliverytech.delivery_api.dto.response.ProdutoResponseDTO;
-import com.deliverytech.delivery_api.exepction.BusinessException;
-import com.deliverytech.delivery_api.exepction.EntityNotFoundException;
+import com.deliverytech.delivery_api.exeption.BusinessException;
+import com.deliverytech.delivery_api.exeption.EntityNotFoundException;
 import com.deliverytech.delivery_api.model.Produto;
 import com.deliverytech.delivery_api.model.Restaurante;
 import com.deliverytech.delivery_api.model.Usuario;

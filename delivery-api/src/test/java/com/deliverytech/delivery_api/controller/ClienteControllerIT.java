@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -16,6 +18,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
+@ActiveProfiles("test")
 @Transactional
 public class ClienteControllerIT {
 
@@ -26,6 +29,7 @@ public class ClienteControllerIT {
     private ObjectMapper objectMapper;
 
     @Test
+    @WithMockUser(username = "admin", roles = {"CLIENTE", "ADMIN"})
     @DisplayName("Deve cadastrar um cliente com sucesso e retornar 201 Created")
     void deveCadastrarClienteComSucesso() throws Exception {
         // AJUSTE: Preenchendo todos os campos obrigatórios identificados no log
@@ -44,6 +48,7 @@ public class ClienteControllerIT {
     }
 
     @Test
+    @WithMockUser(username = "admin", roles = {"CLIENTE", "ADMIN"})
     @DisplayName("Deve retornar 400 Bad Request ao tentar cadastrar cliente inválido")
     void deveRetornarErroAoCadastrarClienteInvalido() throws Exception {
         ClienteRequestDTO clienteInvalido = new ClienteRequestDTO(); // Tudo null
@@ -59,6 +64,7 @@ public class ClienteControllerIT {
     }
 
     @Test
+    @WithMockUser(username = "admin", roles = {"CLIENTE", "ADMIN"})
     @DisplayName("Deve listar clientes ativos com paginação")
     void deveListarClientesPaginados() throws Exception {
         mockMvc.perform(get("/api/clientes")

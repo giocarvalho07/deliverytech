@@ -3,18 +3,17 @@ package com.deliverytech.delivery_api.service;
 import com.deliverytech.delivery_api.dto.request.ClienteRequestDTO;
 import com.deliverytech.delivery_api.dto.response.ClienteResponseDTO;
 import com.deliverytech.delivery_api.dto.response.PagedResponse;
-import com.deliverytech.delivery_api.exepction.BusinessException;
-import com.deliverytech.delivery_api.exepction.EntityNotFoundException;
+import com.deliverytech.delivery_api.exeption.BusinessException;
+import com.deliverytech.delivery_api.exeption.EntityNotFoundException;
 import com.deliverytech.delivery_api.model.Cliente;
 import com.deliverytech.delivery_api.repository.ClienteRepository;
+import jakarta.validation.Valid;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.stream.Collectors;
 
 
 @Service
@@ -30,7 +29,7 @@ public class ClienteService {
 
     // cadastrarCliente - Valida email único
     @Transactional
-    public ClienteResponseDTO cadastrarCliente(ClienteRequestDTO dto) {
+    public ClienteResponseDTO cadastrarCliente(@Valid ClienteRequestDTO dto) {
         if (clienteRepository.findByEmail(dto.getEmail()).isPresent()) {
             throw new BusinessException("Já existe um cliente cadastrado com este e-mail: " + dto.getEmail());
         }

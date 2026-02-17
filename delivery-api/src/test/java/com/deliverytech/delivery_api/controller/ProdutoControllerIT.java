@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
@@ -54,6 +55,7 @@ public class ProdutoControllerIT {
     }
 
     @Test
+    @WithMockUser(username = "admin", roles = {"CLIENTE", "ADMIN"})
     @DisplayName("Cenário: Cadastrar produto com sucesso")
     void deveCriarProduto() throws Exception {
         ProdutoRequestDTO dto = new ProdutoRequestDTO();
@@ -72,6 +74,7 @@ public class ProdutoControllerIT {
     }
 
     @Test
+    @WithMockUser(username = "admin", roles = {"CLIENTE", "ADMIN"})
     @DisplayName("Cenário: Buscar produto por ID")
     void deveBuscarProduto() throws Exception {
         mockMvc.perform(get("/api/produtos/" + produtoSalvo.getId()))
@@ -80,6 +83,7 @@ public class ProdutoControllerIT {
     }
 
     @Test
+    @WithMockUser(username = "admin", roles = {"CLIENTE", "ADMIN"})
     @DisplayName("Cenário: Atualizar produto")
     void deveAtualizarProduto() throws Exception {
         ProdutoRequestDTO dto = new ProdutoRequestDTO();
@@ -98,6 +102,7 @@ public class ProdutoControllerIT {
     }
 
     @Test
+    @WithMockUser(username = "admin", roles = {"CLIENTE", "ADMIN"})
     @DisplayName("Cenário: Excluir produto")
     void deveExcluirProduto() throws Exception {
         mockMvc.perform(delete("/api/produtos/" + produtoSalvo.getId()))
