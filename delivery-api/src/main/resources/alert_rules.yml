@@ -1,0 +1,26 @@
+groups:
+  - name: delivery_alerts
+    rules:
+      # 4.3.1: Alerta para Health Check Failure
+      - alert: APIForaDoAr
+        expr: up == 0
+        for: 1m
+        annotations:
+          summary: "A API de Delivery caiu!"
+          description: "O endpoint /actuator/health não responde há mais de 1 minuto."
+
+      # 4.3.2: Alerta para Error Rate (Métrica de Negócio)
+      - alert: AltaTaxaDeErroPedidos
+        expr: rate(delivery_pedidos_total{status="erro"}[5m]) > 0.1
+        for: 2m
+        annotations:
+          summary: "Alta taxa de falha nos pedidos"
+          description: "Mais de 10% dos pedidos falharam nos últimos 5 minutos."
+
+      # 4.3.3: Alerta para Uso Excessivo de Recursos (Memória)
+      - alert: MemoriaJvmCritica
+        expr: jvm_memory_used_bytes / jvm_memory_max_bytes > 0.85
+        for: 5m
+        annotations:
+          summary: "Memória JVM acima de 85%"
+          description: "Risco iminente de OutOfMemory na aplicação."

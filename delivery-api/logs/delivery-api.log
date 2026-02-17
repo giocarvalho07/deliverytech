@@ -1244,3 +1244,555 @@
 2026-02-17 01:49:40.566 [SpringApplicationShutdownHook] WARN  o.s.b.f.s.DisposableBeanAdapter - Invocation of destroy method failed on bean with name 'inMemoryDatabaseShutdownExecutor': org.h2.jdbc.JdbcSQLNonTransientConnectionException: Database is already closed (to disable automatic closing at VM shutdown, add ";DB_CLOSE_ON_EXIT=FALSE" to the db URL) [90121-224]
 2026-02-17 01:49:40.569 [SpringApplicationShutdownHook] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown initiated...
 2026-02-17 01:49:40.619 [SpringApplicationShutdownHook] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown completed.
+2026-02-17 01:50:02.120 [background-preinit] INFO  o.h.validator.internal.util.Version - HV000001: Hibernate Validator 8.0.1.Final
+2026-02-17 01:50:02.305 [restartedMain] INFO  c.d.d.DeliveryApiApplication - Starting DeliveryApiApplication using Java 21.0.9 with PID 25872 (C:\Users\giova\Downloads\TI ARQUITETURA DE SISTEMAS\deliverytech\delivery-api\target\classes started by giova in C:\Users\giova\Downloads\TI ARQUITETURA DE SISTEMAS\deliverytech\delivery-api)
+2026-02-17 01:50:02.306 [restartedMain] DEBUG c.d.d.DeliveryApiApplication - Running with Spring Boot v3.3.4, Spring v6.1.13
+2026-02-17 01:50:02.309 [restartedMain] INFO  c.d.d.DeliveryApiApplication - No active profile set, falling back to 1 default profile: "default"
+2026-02-17 01:50:02.489 [restartedMain] INFO  o.s.b.d.e.DevToolsPropertyDefaultsPostProcessor - Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
+2026-02-17 01:50:02.489 [restartedMain] INFO  o.s.b.d.e.DevToolsPropertyDefaultsPostProcessor - For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
+2026-02-17 01:50:06.607 [restartedMain] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-02-17 01:50:06.792 [restartedMain] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 159 ms. Found 6 JPA repository interfaces.
+2026-02-17 01:50:08.412 [restartedMain] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port 8080 (http)
+2026-02-17 01:50:08.433 [restartedMain] INFO  o.a.coyote.http11.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-8080"]
+2026-02-17 01:50:08.438 [restartedMain] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+2026-02-17 01:50:08.439 [restartedMain] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.30]
+2026-02-17 01:50:08.544 [restartedMain] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2026-02-17 01:50:08.544 [restartedMain] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 6054 ms
+2026-02-17 01:50:09.194 [restartedMain] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
+2026-02-17 01:50:09.498 [restartedMain] INFO  com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection conn0: url=jdbc:h2:mem:deliverydb user=SA
+2026-02-17 01:50:09.500 [restartedMain] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Start completed.
+2026-02-17 01:50:09.514 [restartedMain] INFO  o.s.b.a.h.H2ConsoleAutoConfiguration - H2 console available at '/h2-console'. Database available at 'jdbc:h2:mem:deliverydb'
+2026-02-17 01:50:09.934 [restartedMain] INFO  o.h.jpa.internal.util.LogHelper - HHH000204: Processing PersistenceUnitInfo [name: default]
+2026-02-17 01:50:10.057 [restartedMain] INFO  org.hibernate.Version - HHH000412: Hibernate ORM core version 6.5.3.Final
+2026-02-17 01:50:10.122 [restartedMain] INFO  o.h.c.i.RegionFactoryInitiator - HHH000026: Second-level cache disabled
+2026-02-17 01:50:10.649 [restartedMain] INFO  o.s.o.j.p.SpringPersistenceUnitInfo - No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-02-17 01:50:10.748 [restartedMain] WARN  org.hibernate.orm.deprecation - HHH90000025: H2Dialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2026-02-17 01:50:12.136 [restartedMain] INFO  o.h.e.t.j.p.i.JtaPlatformInitiator - HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-02-17 01:50:12.154 [restartedMain] DEBUG org.hibernate.SQL - 
+    drop table if exists clientes cascade 
+2026-02-17 01:50:12.158 [restartedMain] DEBUG org.hibernate.SQL - 
+    drop table if exists itens_pedido cascade 
+2026-02-17 01:50:12.158 [restartedMain] DEBUG org.hibernate.SQL - 
+    drop table if exists pedidos cascade 
+2026-02-17 01:50:12.158 [restartedMain] DEBUG org.hibernate.SQL - 
+    drop table if exists produtos cascade 
+2026-02-17 01:50:12.159 [restartedMain] DEBUG org.hibernate.SQL - 
+    drop table if exists restaurantes cascade 
+2026-02-17 01:50:12.159 [restartedMain] DEBUG org.hibernate.SQL - 
+    drop table if exists usuarios cascade 
+2026-02-17 01:50:12.163 [restartedMain] DEBUG org.hibernate.SQL - 
+    create table clientes (
+        ativo boolean not null,
+        data_cadastro timestamp(6),
+        id bigint generated by default as identity,
+        email varchar(255) not null unique,
+        endereco varchar(255),
+        nome varchar(255),
+        telefone varchar(255),
+        primary key (id)
+    )
+2026-02-17 01:50:12.173 [restartedMain] DEBUG org.hibernate.SQL - 
+    create table itens_pedido (
+        preco_unitario numeric(38,2),
+        quantidade integer,
+        subtotal numeric(38,2),
+        id bigint generated by default as identity,
+        pedido_id bigint,
+        produto_id bigint,
+        primary key (id)
+    )
+2026-02-17 01:50:12.175 [restartedMain] DEBUG org.hibernate.SQL - 
+    create table pedidos (
+        taxa_entrega numeric(38,2),
+        valor_total numeric(38,2),
+        cliente_id bigint,
+        data_pedido timestamp(6),
+        id bigint generated by default as identity,
+        restaurante_id bigint,
+        endereco_entrega varchar(255),
+        numero_pedido varchar(255),
+        status enum ('CANCELADO','CONFIRMADO','ENTREGUE','PENDENTE'),
+        primary key (id)
+    )
+2026-02-17 01:50:12.176 [restartedMain] DEBUG org.hibernate.SQL - 
+    create table produtos (
+        disponivel boolean,
+        preco numeric(38,2),
+        id bigint generated by default as identity,
+        restaurante_id bigint,
+        categoria varchar(255),
+        descricao varchar(255),
+        nome varchar(255),
+        primary key (id)
+    )
+2026-02-17 01:50:12.178 [restartedMain] DEBUG org.hibernate.SQL - 
+    create table restaurantes (
+        ativo boolean,
+        avaliacao numeric(38,2),
+        taxa_entrega numeric(38,2),
+        id bigint generated by default as identity,
+        categoria varchar(255),
+        endereco varchar(255),
+        nome varchar(255),
+        telefone varchar(255),
+        primary key (id)
+    )
+2026-02-17 01:50:12.180 [restartedMain] DEBUG org.hibernate.SQL - 
+    create table usuarios (
+        ativo boolean,
+        data_criacao timestamp(6),
+        id bigint generated by default as identity,
+        restaurante_id bigint,
+        email varchar(255) not null unique,
+        nome varchar(255),
+        senha varchar(255) not null,
+        role enum ('ADMIN','CLIENTE','ENTREGADOR','RESTAURANTE'),
+        primary key (id)
+    )
+2026-02-17 01:50:12.182 [restartedMain] DEBUG org.hibernate.SQL - 
+    alter table if exists itens_pedido 
+       add constraint FK42mycompce3b7yt3l6ukdwsxy 
+       foreign key (pedido_id) 
+       references pedidos
+2026-02-17 01:50:12.194 [restartedMain] DEBUG org.hibernate.SQL - 
+    alter table if exists itens_pedido 
+       add constraint FKxytdlekpdaobqphujy9bmuhl 
+       foreign key (produto_id) 
+       references produtos
+2026-02-17 01:50:12.195 [restartedMain] DEBUG org.hibernate.SQL - 
+    alter table if exists pedidos 
+       add constraint FKg7202lk0hwxn04bmdl2thth5b 
+       foreign key (cliente_id) 
+       references clientes
+2026-02-17 01:50:12.198 [restartedMain] DEBUG org.hibernate.SQL - 
+    alter table if exists pedidos 
+       add constraint FKf3mf88pcxawf3nt06400qmqn3 
+       foreign key (restaurante_id) 
+       references restaurantes
+2026-02-17 01:50:12.200 [restartedMain] DEBUG org.hibernate.SQL - 
+    alter table if exists produtos 
+       add constraint FKsl3jhd8nhd103c5nm6yocnnkx 
+       foreign key (restaurante_id) 
+       references restaurantes
+2026-02-17 01:50:12.204 [restartedMain] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-02-17 01:50:12.928 [restartedMain] DEBUG c.d.d.config.SecurityFilter - Filter 'securityFilter' configured for use
+2026-02-17 01:50:12.931 [restartedMain] DEBUG o.s.w.f.ServerHttpObservationFilter - Filter 'webMvcObservationFilter' configured for use
+2026-02-17 01:50:13.019 [restartedMain] INFO  o.s.d.j.r.query.QueryEnhancerFactory - Hibernate is in classpath; If applicable, HQL parser will be used.
+2026-02-17 01:50:14.473 [restartedMain] INFO  o.s.s.c.a.a.c.InitializeUserDetailsBeanManagerConfigurer$InitializeUserDetailsManagerConfigurer - Global AuthenticationManager configured with UserDetailsService bean with name autenticacaoService
+2026-02-17 01:50:15.251 [restartedMain] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - 49 mappings in 'requestMappingHandlerMapping'
+2026-02-17 01:50:15.471 [restartedMain] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Patterns [/webjars/**, /**, /swagger-ui*/*swagger-initializer.js, /swagger-ui*/**] in 'resourceHandlerMapping'
+2026-02-17 01:50:15.739 [restartedMain] INFO  o.s.b.a.e.web.EndpointLinksResolver - Exposing 5 endpoints beneath base path '/actuator'
+2026-02-17 01:50:16.058 [restartedMain] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerAdapter - ControllerAdvice beans: 0 @ModelAttribute, 0 @InitBinder, 1 RequestBodyAdvice, 1 ResponseBodyAdvice
+2026-02-17 01:50:16.098 [restartedMain] DEBUG o.s.w.s.m.m.a.ExceptionHandlerExceptionResolver - ControllerAdvice beans: 2 @ExceptionHandler, 1 ResponseBodyAdvice
+2026-02-17 01:50:16.569 [restartedMain] INFO  o.s.b.d.a.OptionalLiveReloadServer - LiveReload server is running on port 35729
+2026-02-17 01:50:16.692 [restartedMain] INFO  o.a.coyote.http11.Http11NioProtocol - Starting ProtocolHandler ["http-nio-8080"]
+2026-02-17 01:50:16.729 [restartedMain] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port 8080 (http) with context path '/'
+2026-02-17 01:50:16.751 [restartedMain] INFO  c.d.d.DeliveryApiApplication - Started DeliveryApiApplication in 16.069 seconds (process running for 18.111)
+2026-02-17 01:50:17.059 [restartedMain] DEBUG org.hibernate.SQL - 
+    select
+        c1_0.id,
+        c1_0.ativo,
+        c1_0.data_cadastro,
+        c1_0.email,
+        c1_0.endereco,
+        c1_0.nome,
+        c1_0.telefone 
+    from
+        clientes c1_0 
+    where
+        c1_0.ativo 
+    fetch
+        first ? rows only
+2026-02-17 01:50:17.083 [restartedMain] INFO  c.d.delivery_api.config.DataLoader - --- INICIANDO CARGA DE DADOS ---
+2026-02-17 01:50:17.092 [restartedMain] DEBUG org.hibernate.SQL - 
+    select
+        c1_0.id,
+        c1_0.ativo,
+        c1_0.data_cadastro,
+        c1_0.email,
+        c1_0.endereco,
+        c1_0.nome,
+        c1_0.telefone 
+    from
+        clientes c1_0 
+    where
+        c1_0.email=?
+2026-02-17 01:50:17.141 [restartedMain] DEBUG org.hibernate.SQL - 
+    insert 
+    into
+        clientes
+        (ativo, data_cadastro, email, endereco, nome, telefone, id) 
+    values
+        (?, ?, ?, ?, ?, ?, default)
+2026-02-17 01:50:17.168 [restartedMain] DEBUG org.hibernate.SQL - 
+    select
+        c1_0.id,
+        c1_0.ativo,
+        c1_0.data_cadastro,
+        c1_0.email,
+        c1_0.endereco,
+        c1_0.nome,
+        c1_0.telefone 
+    from
+        clientes c1_0 
+    where
+        c1_0.email=?
+2026-02-17 01:50:17.170 [restartedMain] DEBUG org.hibernate.SQL - 
+    insert 
+    into
+        clientes
+        (ativo, data_cadastro, email, endereco, nome, telefone, id) 
+    values
+        (?, ?, ?, ?, ?, ?, default)
+2026-02-17 01:50:17.174 [restartedMain] DEBUG org.hibernate.SQL - 
+    insert 
+    into
+        restaurantes
+        (ativo, avaliacao, categoria, endereco, nome, taxa_entrega, telefone, id) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, default)
+2026-02-17 01:50:17.179 [restartedMain] DEBUG org.hibernate.SQL - 
+    insert 
+    into
+        restaurantes
+        (ativo, avaliacao, categoria, endereco, nome, taxa_entrega, telefone, id) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, default)
+2026-02-17 01:50:17.181 [restartedMain] DEBUG org.hibernate.SQL - 
+    insert 
+    into
+        restaurantes
+        (ativo, avaliacao, categoria, endereco, nome, taxa_entrega, telefone, id) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, default)
+2026-02-17 01:50:17.198 [restartedMain] DEBUG org.hibernate.SQL - 
+    insert 
+    into
+        produtos
+        (categoria, descricao, disponivel, nome, preco, restaurante_id, id) 
+    values
+        (?, ?, ?, ?, ?, ?, default)
+2026-02-17 01:50:17.204 [restartedMain] DEBUG org.hibernate.SQL - 
+    insert 
+    into
+        produtos
+        (categoria, descricao, disponivel, nome, preco, restaurante_id, id) 
+    values
+        (?, ?, ?, ?, ?, ?, default)
+2026-02-17 01:50:17.207 [restartedMain] DEBUG org.hibernate.SQL - 
+    insert 
+    into
+        produtos
+        (categoria, descricao, disponivel, nome, preco, restaurante_id, id) 
+    values
+        (?, ?, ?, ?, ?, ?, default)
+2026-02-17 01:50:17.208 [restartedMain] INFO  c.d.delivery_api.config.DataLoader - --- EXECUTANDO CENÁRIOS DE TESTE (CRIAÇÃO DE PEDIDOS) ---
+2026-02-17 01:50:17.212 [restartedMain] DEBUG org.hibernate.SQL - 
+    insert 
+    into
+        pedidos
+        (cliente_id, data_pedido, endereco_entrega, numero_pedido, restaurante_id, status, taxa_entrega, valor_total, id) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?, default)
+2026-02-17 01:50:17.222 [restartedMain] INFO  c.d.delivery_api.config.DataLoader - Pedido 1 criado: Número 910C9FE2, Total R$ 40.9
+2026-02-17 01:50:17.225 [restartedMain] DEBUG org.hibernate.SQL - 
+    insert 
+    into
+        pedidos
+        (cliente_id, data_pedido, endereco_entrega, numero_pedido, restaurante_id, status, taxa_entrega, valor_total, id) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?, default)
+2026-02-17 01:50:17.228 [restartedMain] INFO  c.d.delivery_api.config.DataLoader - Pedido 2 criado: Número EE1444DB, Total R$ 53.9
+2026-02-17 01:50:17.228 [restartedMain] INFO  c.d.delivery_api.config.DataLoader - --- CARGA E TESTES CONCLUÍDOS COM SUCESSO ---
+2026-02-17 01:50:36.931 [http-nio-8080-exec-2] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-02-17 01:50:36.932 [http-nio-8080-exec-2] INFO  o.s.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcherServlet'
+2026-02-17 01:50:36.933 [http-nio-8080-exec-2] DEBUG o.s.web.servlet.DispatcherServlet - Detected StandardServletMultipartResolver
+2026-02-17 01:50:36.933 [http-nio-8080-exec-2] DEBUG o.s.web.servlet.DispatcherServlet - Detected AcceptHeaderLocaleResolver
+2026-02-17 01:50:36.933 [http-nio-8080-exec-2] DEBUG o.s.web.servlet.DispatcherServlet - Detected FixedThemeResolver
+2026-02-17 01:50:36.936 [http-nio-8080-exec-2] DEBUG o.s.web.servlet.DispatcherServlet - Detected org.springframework.web.servlet.view.DefaultRequestToViewNameTranslator@96aa06a
+2026-02-17 01:50:36.938 [http-nio-8080-exec-2] DEBUG o.s.web.servlet.DispatcherServlet - Detected org.springframework.web.servlet.support.SessionFlashMapManager@7c4a801c
+2026-02-17 01:50:36.938 [http-nio-8080-exec-2] DEBUG o.s.web.servlet.DispatcherServlet - enableLoggingRequestDetails='false': request parameters and headers will be masked to prevent unsafe logging of potentially sensitive data
+2026-02-17 01:50:36.938 [http-nio-8080-exec-2] INFO  o.s.web.servlet.DispatcherServlet - Completed initialization in 6 ms
+2026-02-17 01:50:37.073 [http-nio-8080-exec-2] DEBUG o.s.web.servlet.DispatcherServlet - POST "/api/auth/register", parameters={}
+2026-02-17 01:50:37.080 [http-nio-8080-exec-2] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to com.deliverytech.delivery_api.controller.AuthController#register(RegisterRequestDTO)
+2026-02-17 01:50:37.082 [http-nio-8080-exec-2] INFO  c.d.d.config.LoggingInterceptor - ==> Início da Requisição: POST /api/auth/register | IP: 0:0:0:0:0:0:0:1
+2026-02-17 01:50:37.261 [http-nio-8080-exec-2] DEBUG o.s.w.s.m.m.a.RequestResponseBodyMethodProcessor - Read "application/json;charset=UTF-8" to [com.deliverytech.delivery_api.dto.request.login.RegisterRequestDTO@1b82df8]
+2026-02-17 01:50:37.396 [http-nio-8080-exec-2] DEBUG org.hibernate.SQL - 
+    select
+        u1_0.id,
+        u1_0.ativo,
+        u1_0.data_criacao,
+        u1_0.email,
+        u1_0.nome,
+        u1_0.restaurante_id,
+        u1_0.role,
+        u1_0.senha 
+    from
+        usuarios u1_0 
+    where
+        u1_0.email=?
+2026-02-17 01:50:37.568 [http-nio-8080-exec-2] DEBUG org.hibernate.SQL - 
+    insert 
+    into
+        usuarios
+        (ativo, data_criacao, email, nome, restaurante_id, role, senha, id) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, default)
+2026-02-17 01:50:37.618 [http-nio-8080-exec-2] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Using 'application/json', given [*/*] and supported [application/json, application/*+json]
+2026-02-17 01:50:37.626 [http-nio-8080-exec-2] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Writing [ApiSucessResponse(sucesso=true, mensagem=Usuário registrado com sucesso, dados=com.deliverytech.deli (truncated)...]
+2026-02-17 01:50:37.654 [http-nio-8080-exec-2] INFO  c.d.d.config.LoggingInterceptor - <== Fim da Requisição: POST /api/auth/register | Status: 201 | Tempo: 573ms
+2026-02-17 01:50:37.656 [http-nio-8080-exec-2] DEBUG o.s.web.servlet.DispatcherServlet - Completed 201 CREATED
+2026-02-17 01:50:40.450 [http-nio-8080-exec-3] DEBUG o.s.web.servlet.DispatcherServlet - POST "/api/auth/login", parameters={}
+2026-02-17 01:50:40.451 [http-nio-8080-exec-3] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to com.deliverytech.delivery_api.controller.AuthController#login(LoginRequestDTO)
+2026-02-17 01:50:40.451 [http-nio-8080-exec-3] INFO  c.d.d.config.LoggingInterceptor - ==> Início da Requisição: POST /api/auth/login | IP: 0:0:0:0:0:0:0:1
+2026-02-17 01:50:40.454 [http-nio-8080-exec-3] DEBUG o.s.w.s.m.m.a.RequestResponseBodyMethodProcessor - Read "application/json;charset=UTF-8" to [com.deliverytech.delivery_api.dto.request.login.LoginRequestDTO@188a9076]
+2026-02-17 01:50:40.596 [http-nio-8080-exec-3] DEBUG org.hibernate.SQL - 
+    select
+        u1_0.id,
+        u1_0.ativo,
+        u1_0.data_criacao,
+        u1_0.email,
+        u1_0.nome,
+        u1_0.restaurante_id,
+        u1_0.role,
+        u1_0.senha 
+    from
+        usuarios u1_0 
+    where
+        u1_0.email=?
+2026-02-17 01:50:40.790 [http-nio-8080-exec-3] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Using 'application/json', given [*/*] and supported [application/json, application/*+json]
+2026-02-17 01:50:40.790 [http-nio-8080-exec-3] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Writing [ApiSucessResponse(sucesso=true, mensagem=Login realizado com sucesso, dados=com.deliverytech.deliver (truncated)...]
+2026-02-17 01:50:40.795 [http-nio-8080-exec-3] INFO  c.d.d.config.LoggingInterceptor - <== Fim da Requisição: POST /api/auth/login | Status: 200 | Tempo: 344ms
+2026-02-17 01:50:40.795 [http-nio-8080-exec-3] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2026-02-17 01:50:49.436 [http-nio-8080-exec-6] DEBUG o.s.web.servlet.DispatcherServlet - GET "/actuator/prometheus", parameters={}
+2026-02-17 01:50:49.440 [http-nio-8080-exec-6] DEBUG o.s.w.s.m.m.a.RequestResponseBodyMethodProcessor - Read "application/octet-stream" to []
+2026-02-17 01:50:50.614 [http-nio-8080-exec-6] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Found 'Content-Type:text/plain;version=0.0.4;charset=utf-8' in response
+2026-02-17 01:50:50.641 [http-nio-8080-exec-6] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Writing [{35, 32, 72, 69, 76, 80, 32, 97, 112, 112, 108, 105, 99, 97, 116, 105, 111, 110, 95, 114, 101, 97, 1 (truncated)...]
+2026-02-17 01:50:50.643 [http-nio-8080-exec-6] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2026-02-17 01:51:06.920 [http-nio-8080-exec-5] DEBUG org.hibernate.SQL - 
+    select
+        u1_0.id,
+        u1_0.ativo,
+        u1_0.data_criacao,
+        u1_0.email,
+        u1_0.nome,
+        u1_0.restaurante_id,
+        u1_0.role,
+        u1_0.senha 
+    from
+        usuarios u1_0 
+    where
+        u1_0.email=?
+2026-02-17 01:51:06.930 [http-nio-8080-exec-5] DEBUG o.s.web.servlet.DispatcherServlet - GET "/actuator/metrics/delivery_pedidos_total", parameters={}
+2026-02-17 01:51:06.932 [http-nio-8080-exec-5] DEBUG o.s.w.s.m.m.a.RequestResponseBodyMethodProcessor - Read "application/octet-stream" to []
+2026-02-17 01:51:06.948 [http-nio-8080-exec-5] DEBUG o.s.w.s.m.m.a.RequestResponseBodyMethodProcessor - Using 'application/vnd.spring-boot.actuator.v3+json', given [*/*] and supported [application/vnd.spring-boot.actuator.v3+json, application/vnd.spring-boot.actuator.v2+json, application/json]
+2026-02-17 01:51:06.953 [http-nio-8080-exec-5] DEBUG o.s.w.s.m.m.a.RequestResponseBodyMethodProcessor - Writing [org.springframework.boot.actuate.metrics.MetricsEndpoint$MetricDescriptor@74877f4]
+2026-02-17 01:51:06.979 [http-nio-8080-exec-5] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2026-02-17 01:51:15.728 [http-nio-8080-exec-7] DEBUG org.hibernate.SQL - 
+    select
+        u1_0.id,
+        u1_0.ativo,
+        u1_0.data_criacao,
+        u1_0.email,
+        u1_0.nome,
+        u1_0.restaurante_id,
+        u1_0.role,
+        u1_0.senha 
+    from
+        usuarios u1_0 
+    where
+        u1_0.email=?
+2026-02-17 01:51:15.739 [http-nio-8080-exec-7] DEBUG o.s.web.servlet.DispatcherServlet - GET "/actuator/metrics/delivery_usuarios_ativos_total", parameters={}
+2026-02-17 01:51:15.742 [http-nio-8080-exec-7] DEBUG o.s.w.s.m.m.a.RequestResponseBodyMethodProcessor - Read "application/octet-stream" to []
+2026-02-17 01:51:15.743 [http-nio-8080-exec-7] DEBUG o.s.w.s.m.m.a.RequestResponseBodyMethodProcessor - Using 'application/vnd.spring-boot.actuator.v3+json', given [*/*] and supported [application/vnd.spring-boot.actuator.v3+json, application/vnd.spring-boot.actuator.v2+json, application/json]
+2026-02-17 01:51:15.744 [http-nio-8080-exec-7] DEBUG o.s.w.s.m.m.a.RequestResponseBodyMethodProcessor - Writing [org.springframework.boot.actuate.metrics.MetricsEndpoint$MetricDescriptor@c738d28]
+2026-02-17 01:51:15.747 [http-nio-8080-exec-7] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2026-02-17 01:51:19.993 [http-nio-8080-exec-8] DEBUG org.hibernate.SQL - 
+    select
+        u1_0.id,
+        u1_0.ativo,
+        u1_0.data_criacao,
+        u1_0.email,
+        u1_0.nome,
+        u1_0.restaurante_id,
+        u1_0.role,
+        u1_0.senha 
+    from
+        usuarios u1_0 
+    where
+        u1_0.email=?
+2026-02-17 01:51:20.001 [http-nio-8080-exec-8] DEBUG o.s.web.servlet.DispatcherServlet - POST "/api/clientes", parameters={}
+2026-02-17 01:51:20.001 [http-nio-8080-exec-8] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to com.deliverytech.delivery_api.controller.ClienteController#cadastrar(ClienteRequestDTO)
+2026-02-17 01:51:20.002 [http-nio-8080-exec-8] INFO  c.d.d.config.LoggingInterceptor - ==> Início da Requisição: POST /api/clientes | IP: 0:0:0:0:0:0:0:1
+2026-02-17 01:51:20.017 [http-nio-8080-exec-8] DEBUG o.s.w.s.m.m.a.RequestResponseBodyMethodProcessor - Read "application/json;charset=UTF-8" to [com.deliverytech.delivery_api.dto.request.ClienteRequestDTO@42ec2e8]
+2026-02-17 01:51:20.039 [http-nio-8080-exec-8] DEBUG org.hibernate.SQL - 
+    select
+        c1_0.id,
+        c1_0.ativo,
+        c1_0.data_cadastro,
+        c1_0.email,
+        c1_0.endereco,
+        c1_0.nome,
+        c1_0.telefone 
+    from
+        clientes c1_0 
+    where
+        c1_0.email=?
+2026-02-17 01:51:20.044 [http-nio-8080-exec-8] DEBUG org.hibernate.SQL - 
+    insert 
+    into
+        clientes
+        (ativo, data_cadastro, email, endereco, nome, telefone, id) 
+    values
+        (?, ?, ?, ?, ?, ?, default)
+2026-02-17 01:51:20.064 [http-nio-8080-exec-8] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Using 'application/json', given [*/*] and supported [application/json, application/*+json]
+2026-02-17 01:51:20.066 [http-nio-8080-exec-8] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Writing [ApiSucessResponse(sucesso=true, mensagem=Cliente cadastrado com sucesso, dados=com.deliverytech.deli (truncated)...]
+2026-02-17 01:51:20.071 [http-nio-8080-exec-8] INFO  c.d.d.config.LoggingInterceptor - <== Fim da Requisição: POST /api/clientes | Status: 201 | Tempo: 70ms
+2026-02-17 01:51:20.072 [http-nio-8080-exec-8] DEBUG o.s.web.servlet.DispatcherServlet - Completed 201 CREATED
+2026-02-17 01:51:23.592 [http-nio-8080-exec-9] DEBUG org.hibernate.SQL - 
+    select
+        u1_0.id,
+        u1_0.ativo,
+        u1_0.data_criacao,
+        u1_0.email,
+        u1_0.nome,
+        u1_0.restaurante_id,
+        u1_0.role,
+        u1_0.senha 
+    from
+        usuarios u1_0 
+    where
+        u1_0.email=?
+2026-02-17 01:51:23.599 [http-nio-8080-exec-9] DEBUG o.s.web.servlet.DispatcherServlet - GET "/api/clientes?page=0&size=10", parameters={masked}
+2026-02-17 01:51:23.602 [http-nio-8080-exec-9] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to com.deliverytech.delivery_api.controller.ClienteController#listarAtivos(Pageable)
+2026-02-17 01:51:23.602 [http-nio-8080-exec-9] INFO  c.d.d.config.LoggingInterceptor - ==> Início da Requisição: GET /api/clientes | IP: 0:0:0:0:0:0:0:1
+2026-02-17 01:51:23.611 [http-nio-8080-exec-9] DEBUG org.hibernate.SQL - 
+    select
+        c1_0.id,
+        c1_0.ativo,
+        c1_0.data_cadastro,
+        c1_0.email,
+        c1_0.endereco,
+        c1_0.nome,
+        c1_0.telefone 
+    from
+        clientes c1_0 
+    where
+        c1_0.ativo 
+    fetch
+        first ? rows only
+2026-02-17 01:51:23.629 [http-nio-8080-exec-9] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Using 'application/json', given [*/*] and supported [application/json, application/*+json]
+2026-02-17 01:51:23.636 [http-nio-8080-exec-9] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Writing [ApiSucessResponse(sucesso=true, mensagem=Página de clientes recuperada, dados=PagedResponse(conteudo (truncated)...]
+2026-02-17 01:51:23.644 [http-nio-8080-exec-9] INFO  c.d.d.config.LoggingInterceptor - <== Fim da Requisição: GET /api/clientes | Status: 200 | Tempo: 42ms
+2026-02-17 01:51:23.646 [http-nio-8080-exec-9] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2026-02-17 01:51:30.026 [http-nio-8080-exec-10] DEBUG org.hibernate.SQL - 
+    select
+        u1_0.id,
+        u1_0.ativo,
+        u1_0.data_criacao,
+        u1_0.email,
+        u1_0.nome,
+        u1_0.restaurante_id,
+        u1_0.role,
+        u1_0.senha 
+    from
+        usuarios u1_0 
+    where
+        u1_0.email=?
+2026-02-17 01:51:30.033 [http-nio-8080-exec-10] DEBUG o.s.web.servlet.DispatcherServlet - GET "/api/clientes?page=0&size=10", parameters={masked}
+2026-02-17 01:51:30.034 [http-nio-8080-exec-10] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to com.deliverytech.delivery_api.controller.ClienteController#listarAtivos(Pageable)
+2026-02-17 01:51:30.034 [http-nio-8080-exec-10] INFO  c.d.d.config.LoggingInterceptor - ==> Início da Requisição: GET /api/clientes | IP: 0:0:0:0:0:0:0:1
+2026-02-17 01:51:30.038 [http-nio-8080-exec-10] DEBUG org.hibernate.SQL - 
+    select
+        c1_0.id,
+        c1_0.ativo,
+        c1_0.data_cadastro,
+        c1_0.email,
+        c1_0.endereco,
+        c1_0.nome,
+        c1_0.telefone 
+    from
+        clientes c1_0 
+    where
+        c1_0.ativo 
+    fetch
+        first ? rows only
+2026-02-17 01:51:30.042 [http-nio-8080-exec-10] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Using 'application/json', given [*/*] and supported [application/json, application/*+json]
+2026-02-17 01:51:30.043 [http-nio-8080-exec-10] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Writing [ApiSucessResponse(sucesso=true, mensagem=Página de clientes recuperada, dados=PagedResponse(conteudo (truncated)...]
+2026-02-17 01:51:30.046 [http-nio-8080-exec-10] INFO  c.d.d.config.LoggingInterceptor - <== Fim da Requisição: GET /api/clientes | Status: 200 | Tempo: 12ms
+2026-02-17 01:51:30.046 [http-nio-8080-exec-10] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2026-02-17 01:51:51.081 [http-nio-8080-exec-2] DEBUG o.s.web.servlet.DispatcherServlet - GET "/actuator/health", parameters={}
+2026-02-17 01:51:51.084 [http-nio-8080-exec-2] DEBUG o.s.w.s.m.m.a.RequestResponseBodyMethodProcessor - Read "application/octet-stream" to []
+2026-02-17 01:51:51.133 [http-nio-8080-exec-2] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Using 'application/vnd.spring-boot.actuator.v3+json;q=0.8', given [text/html, application/xhtml+xml, image/avif, image/webp, image/apng, application/xml;q=0.9, */*;q=0.8, application/signed-exchange;v=b3;q=0.7] and supported [application/vnd.spring-boot.actuator.v3+json, application/vnd.spring-boot.actuator.v2+json, application/json]
+2026-02-17 01:51:51.152 [http-nio-8080-exec-2] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Writing [org.springframework.boot.actuate.health.SystemHealth@623fce9d]
+2026-02-17 01:51:51.170 [http-nio-8080-exec-2] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2026-02-17 01:51:51.780 [http-nio-8080-exec-6] DEBUG o.s.web.servlet.DispatcherServlet - GET "/actuator/health", parameters={}
+2026-02-17 01:51:51.781 [http-nio-8080-exec-6] DEBUG o.s.w.s.m.m.a.RequestResponseBodyMethodProcessor - Read "application/octet-stream" to []
+2026-02-17 01:51:51.785 [http-nio-8080-exec-6] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Using 'application/vnd.spring-boot.actuator.v3+json', given [*/*] and supported [application/vnd.spring-boot.actuator.v3+json, application/vnd.spring-boot.actuator.v2+json, application/json]
+2026-02-17 01:51:51.785 [http-nio-8080-exec-6] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Writing [org.springframework.boot.actuate.health.SystemHealth@5f5d7b3e]
+2026-02-17 01:51:51.785 [http-nio-8080-exec-6] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2026-02-17 01:52:11.090 [http-nio-8080-exec-5] DEBUG o.s.web.servlet.DispatcherServlet - GET "/swagger-ui/index.html", parameters={}
+2026-02-17 01:52:11.096 [http-nio-8080-exec-5] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/webjars/]]
+2026-02-17 01:52:11.102 [http-nio-8080-exec-5] INFO  c.d.d.config.LoggingInterceptor - ==> Início da Requisição: GET /swagger-ui/index.html | IP: 0:0:0:0:0:0:0:1
+2026-02-17 01:52:11.233 [http-nio-8080-exec-5] INFO  c.d.d.config.LoggingInterceptor - <== Fim da Requisição: GET /swagger-ui/index.html | Status: 200 | Tempo: 131ms
+2026-02-17 01:52:11.233 [http-nio-8080-exec-5] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2026-02-17 01:52:11.273 [http-nio-8080-exec-7] DEBUG o.s.web.servlet.DispatcherServlet - GET "/swagger-ui/swagger-ui.css", parameters={}
+2026-02-17 01:52:11.276 [http-nio-8080-exec-7] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/webjars/]]
+2026-02-17 01:52:11.276 [http-nio-8080-exec-7] INFO  c.d.d.config.LoggingInterceptor - ==> Início da Requisição: GET /swagger-ui/swagger-ui.css | IP: 0:0:0:0:0:0:0:1
+2026-02-17 01:52:11.289 [http-nio-8080-exec-10] DEBUG o.s.web.servlet.DispatcherServlet - GET "/swagger-ui/swagger-ui-standalone-preset.js", parameters={}
+2026-02-17 01:52:11.290 [http-nio-8080-exec-9] DEBUG o.s.web.servlet.DispatcherServlet - GET "/swagger-ui/swagger-ui-bundle.js", parameters={}
+2026-02-17 01:52:11.290 [http-nio-8080-exec-10] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/webjars/]]
+2026-02-17 01:52:11.291 [http-nio-8080-exec-10] INFO  c.d.d.config.LoggingInterceptor - ==> Início da Requisição: GET /swagger-ui/swagger-ui-standalone-preset.js | IP: 0:0:0:0:0:0:0:1
+2026-02-17 01:52:11.290 [http-nio-8080-exec-8] DEBUG o.s.web.servlet.DispatcherServlet - GET "/swagger-ui/index.css", parameters={}
+2026-02-17 01:52:11.291 [http-nio-8080-exec-9] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/webjars/]]
+2026-02-17 01:52:11.293 [http-nio-8080-exec-9] INFO  c.d.d.config.LoggingInterceptor - ==> Início da Requisição: GET /swagger-ui/swagger-ui-bundle.js | IP: 0:0:0:0:0:0:0:1
+2026-02-17 01:52:11.293 [http-nio-8080-exec-7] INFO  c.d.d.config.LoggingInterceptor - <== Fim da Requisição: GET /swagger-ui/swagger-ui.css | Status: 200 | Tempo: 17ms
+2026-02-17 01:52:11.293 [http-nio-8080-exec-8] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/webjars/]]
+2026-02-17 01:52:11.294 [http-nio-8080-exec-7] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2026-02-17 01:52:11.294 [http-nio-8080-exec-8] INFO  c.d.d.config.LoggingInterceptor - ==> Início da Requisição: GET /swagger-ui/index.css | IP: 0:0:0:0:0:0:0:1
+2026-02-17 01:52:11.302 [http-nio-8080-exec-1] DEBUG o.s.web.servlet.DispatcherServlet - GET "/swagger-ui/swagger-initializer.js", parameters={}
+2026-02-17 01:52:11.303 [http-nio-8080-exec-1] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/webjars/]]
+2026-02-17 01:52:11.304 [http-nio-8080-exec-1] INFO  c.d.d.config.LoggingInterceptor - ==> Início da Requisição: GET /swagger-ui/swagger-initializer.js | IP: 0:0:0:0:0:0:0:1
+2026-02-17 01:52:11.305 [http-nio-8080-exec-8] INFO  c.d.d.config.LoggingInterceptor - <== Fim da Requisição: GET /swagger-ui/index.css | Status: 200 | Tempo: 11ms
+2026-02-17 01:52:11.305 [http-nio-8080-exec-10] INFO  c.d.d.config.LoggingInterceptor - <== Fim da Requisição: GET /swagger-ui/swagger-ui-standalone-preset.js | Status: 200 | Tempo: 14ms
+2026-02-17 01:52:11.305 [http-nio-8080-exec-8] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2026-02-17 01:52:11.305 [http-nio-8080-exec-10] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2026-02-17 01:52:11.389 [http-nio-8080-exec-1] INFO  c.d.d.config.LoggingInterceptor - <== Fim da Requisição: GET /swagger-ui/swagger-initializer.js | Status: 200 | Tempo: 84ms
+2026-02-17 01:52:11.389 [http-nio-8080-exec-1] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2026-02-17 01:52:11.409 [http-nio-8080-exec-9] INFO  c.d.d.config.LoggingInterceptor - <== Fim da Requisição: GET /swagger-ui/swagger-ui-bundle.js | Status: 200 | Tempo: 116ms
+2026-02-17 01:52:11.410 [http-nio-8080-exec-9] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2026-02-17 01:52:11.753 [http-nio-8080-exec-2] DEBUG o.s.web.servlet.DispatcherServlet - GET "/swagger-ui/favicon-32x32.png", parameters={}
+2026-02-17 01:52:11.752 [http-nio-8080-exec-3] DEBUG o.s.web.servlet.DispatcherServlet - GET "/swagger-ui/index.html", parameters={}
+2026-02-17 01:52:11.753 [http-nio-8080-exec-2] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/webjars/]]
+2026-02-17 01:52:11.753 [http-nio-8080-exec-2] INFO  c.d.d.config.LoggingInterceptor - ==> Início da Requisição: GET /swagger-ui/favicon-32x32.png | IP: 0:0:0:0:0:0:0:1
+2026-02-17 01:52:11.753 [http-nio-8080-exec-3] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/webjars/]]
+2026-02-17 01:52:11.755 [http-nio-8080-exec-3] INFO  c.d.d.config.LoggingInterceptor - ==> Início da Requisição: GET /swagger-ui/index.html | IP: 0:0:0:0:0:0:0:1
+2026-02-17 01:52:11.758 [http-nio-8080-exec-3] INFO  c.d.d.config.LoggingInterceptor - <== Fim da Requisição: GET /swagger-ui/index.html | Status: 200 | Tempo: 3ms
+2026-02-17 01:52:11.758 [http-nio-8080-exec-3] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2026-02-17 01:52:11.759 [http-nio-8080-exec-2] INFO  c.d.d.config.LoggingInterceptor - <== Fim da Requisição: GET /swagger-ui/favicon-32x32.png | Status: 200 | Tempo: 5ms
+2026-02-17 01:52:11.760 [http-nio-8080-exec-2] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2026-02-17 01:52:11.900 [http-nio-8080-exec-6] DEBUG o.s.web.servlet.DispatcherServlet - GET "/v3/api-docs/swagger-config", parameters={}
+2026-02-17 01:52:11.901 [http-nio-8080-exec-6] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to org.springdoc.webmvc.ui.SwaggerConfigResource#openapiJson(HttpServletRequest)
+2026-02-17 01:52:11.903 [http-nio-8080-exec-6] INFO  c.d.d.config.LoggingInterceptor - ==> Início da Requisição: GET /v3/api-docs/swagger-config | IP: 0:0:0:0:0:0:0:1
+2026-02-17 01:52:11.909 [http-nio-8080-exec-6] DEBUG o.s.w.s.m.m.a.RequestResponseBodyMethodProcessor - Using 'application/json', given [*/*] and supported [application/json]
+2026-02-17 01:52:11.911 [http-nio-8080-exec-6] DEBUG o.s.w.s.m.m.a.RequestResponseBodyMethodProcessor - Writing [{configUrl=/v3/api-docs/swagger-config, oauth2RedirectUrl=http://localhost:8080/swagger-ui/oauth2-re (truncated)...]
+2026-02-17 01:52:11.920 [http-nio-8080-exec-6] INFO  c.d.d.config.LoggingInterceptor - <== Fim da Requisição: GET /v3/api-docs/swagger-config | Status: 200 | Tempo: 18ms
+2026-02-17 01:52:11.920 [http-nio-8080-exec-6] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2026-02-17 01:52:11.997 [http-nio-8080-exec-4] DEBUG o.s.web.servlet.DispatcherServlet - GET "/v3/api-docs/1.%20Autentica%C3%A7%C3%A3o%20e%20Registro", parameters={}
+2026-02-17 01:52:11.998 [http-nio-8080-exec-4] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to org.springdoc.webmvc.api.MultipleOpenApiWebMvcResource#openapiJson(HttpServletRequest, String, String, Locale)
+2026-02-17 01:52:11.999 [http-nio-8080-exec-4] INFO  c.d.d.config.LoggingInterceptor - ==> Início da Requisição: GET /v3/api-docs/1.%20Autentica%C3%A7%C3%A3o%20e%20Registro | IP: 0:0:0:0:0:0:0:1
+2026-02-17 01:52:12.809 [http-nio-8080-exec-4] INFO  o.s.api.AbstractOpenApiResource - Init duration for springdoc-openapi is: 742 ms
+2026-02-17 01:52:12.854 [http-nio-8080-exec-4] DEBUG o.s.w.s.m.m.a.RequestResponseBodyMethodProcessor - Using 'application/json', given [application/json, */*] and supported [application/json]
+2026-02-17 01:52:12.857 [http-nio-8080-exec-4] DEBUG o.s.w.s.m.m.a.RequestResponseBodyMethodProcessor - Writing [{123, 34, 111, 112, 101, 110, 97, 112, 105, 34, 58, 34, 51, 46, 48, 46, 49, 34, 44, 34, 105, 110, 10 (truncated)...]
+2026-02-17 01:52:12.886 [http-nio-8080-exec-4] INFO  c.d.d.config.LoggingInterceptor - <== Fim da Requisição: GET /v3/api-docs/1.%20Autentica%C3%A7%C3%A3o%20e%20Registro | Status: 200 | Tempo: 887ms
+2026-02-17 01:52:12.886 [http-nio-8080-exec-4] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2026-02-17 02:01:09.287 [http-nio-8080-exec-2] DEBUG o.s.web.servlet.DispatcherServlet - GET "/actuator/health", parameters={}
+2026-02-17 02:01:09.357 [http-nio-8080-exec-2] DEBUG o.s.w.s.m.m.a.RequestResponseBodyMethodProcessor - Read "application/octet-stream" to []
+2026-02-17 02:01:09.434 [http-nio-8080-exec-2] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Using 'application/vnd.spring-boot.actuator.v3+json;q=0.8', given [text/html, application/xhtml+xml, image/avif, image/webp, image/apng, application/xml;q=0.9, */*;q=0.8, application/signed-exchange;v=b3;q=0.7] and supported [application/vnd.spring-boot.actuator.v3+json, application/vnd.spring-boot.actuator.v2+json, application/json]
+2026-02-17 02:01:09.450 [http-nio-8080-exec-2] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Writing [org.springframework.boot.actuate.health.SystemHealth@7af49a0f]
+2026-02-17 02:01:09.485 [http-nio-8080-exec-2] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2026-02-17 02:01:10.248 [http-nio-8080-exec-4] DEBUG o.s.web.servlet.DispatcherServlet - GET "/actuator/health", parameters={}
+2026-02-17 02:01:10.249 [http-nio-8080-exec-4] DEBUG o.s.w.s.m.m.a.RequestResponseBodyMethodProcessor - Read "application/octet-stream" to []
+2026-02-17 02:01:10.258 [http-nio-8080-exec-4] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Using 'application/vnd.spring-boot.actuator.v3+json', given [*/*] and supported [application/vnd.spring-boot.actuator.v3+json, application/vnd.spring-boot.actuator.v2+json, application/json]
+2026-02-17 02:01:10.259 [http-nio-8080-exec-4] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Writing [org.springframework.boot.actuate.health.SystemHealth@be67d0]
+2026-02-17 02:01:10.262 [http-nio-8080-exec-4] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
